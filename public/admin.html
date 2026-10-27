@@ -179,7 +179,7 @@ function subs(){
     const inp=(k,l,full,type)=>`<label class="${full?"full":""}">${l}${type==="area"?`<textarea data-k="${k}" ${ro?"readonly":""}>${esc(e[k])}</textarea>`:`<input data-k="${k}" value="${esc(e[k])}" ${type?`type="${type}"`:""} ${ro?"readonly":""}>`}</label>`;
     const sel=(k,l,map)=>`<label>${l}<select data-k="${k}" ${ro?"disabled":""}>${Object.entries(map).map(([a,b])=>`<option value="${a}" ${e[k]===a?"selected":""}>${b}</option>`).join("")}</select></label>`;
     return `<div class="sub" data-id="${s.id}">
-      <div class="meta"><span>Заявка №${s.id}</span><span>Получена ${fd(s.created)}</span><span>Контакт: ${esc(s.contact)}</span>${s.decided?`<span>Решение ${fd(s.decided)}</span>`:""}</div>
+      <div class="meta"><span>Заявка №${s.id}</span><span>Получена ${fd(s.created)}</span>${s.decided?`<span>Решение ${fd(s.decided)}</span>`:""}</div>
       <div class="grid2">${inp("title","Название",true)}${inp("d","Дата",false,"date")}${inp("time","Время")}${inp("city","Город")}${inp("place","Площадка")}${inp("who","Лектор")}${inp("org","Организатор")}${sel("field","Область",FIELDS)}${sel("type","Формат",TYPES)}${inp("price","Стоимость")}${inp("aud","Для кого")}${inp("src","Ссылка",true)}${inp("desc","Описание",true,"area")}</div>
       ${ro?"":`<div class="acts"><button class="btn" data-act="approve">Опубликовать</button><button class="btn bad" data-act="reject">Отклонить</button></div>`}
     </div>`}).join("");

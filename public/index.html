@@ -289,7 +289,7 @@ footer{padding-block:120px 0;overflow:hidden}
         <details><summary>Откуда берутся события?<i aria-hidden="true">+</i></summary><p>Из афиш лекториев, музеев, университетов, научных центров и календаря «Элементов». Дважды в неделю мы проверяем источники и добавляем новые анонсы. У каждого события есть ссылка на страницу организатора.</p></details>
         <details><summary>Что значит пометка «новое, не проверено»?<i aria-hidden="true">+</i></summary><p>Событие нашлось автоматически, и его ещё не сверили вручную. Перед поездкой откройте страницу организатора: время и формат иногда меняются.</p></details>
         <details><summary>Это бесплатно?<i aria-hidden="true">+</i></summary><p>Пользоваться расписанием бесплатно. Многие лекции тоже бесплатные, но часто нужна регистрация. Стоимость и условия указаны в карточке события.</p></details>
-        <details><summary>Как добавить своё мероприятие?<i aria-hidden="true">+</i></summary><p>Заполните форму ниже. Мы проверим анонс и опубликуем его. Подходят открытые лекции, фестивали, экскурсии в лаборатории, научные кафе, школы и курсы.</p></details>
+        <details><summary>Как добавить своё мероприятие?<i aria-hidden="true">+</i></summary><p>Заполните форму ниже и укажите ссылку на официальный анонс. Мы сверим данные и опубликуем событие. Подходят открытые лекции, фестивали, экскурсии в лаборатории, научные кафе, школы и курсы.</p></details>
       </div>
     </div>
   </section>
@@ -298,7 +298,7 @@ footer{padding-block:120px 0;overflow:hidden}
     <div class="submit-grid">
       <div style="display:grid;gap:28px;align-content:start">
         <h2 class="sh"><span>добавить</span><span>событие</span></h2>
-        <div class="intro-text"><p>Проводите научное мероприятие? Пришлите анонс, и после проверки он появится в расписании. Публикация бесплатная.</p></div>
+        <div class="intro-text"><p>Проводите научное мероприятие? Пришлите анонс, и после проверки он появится в расписании. Публикация бесплатная.</p><p>Мы сверяем каждое событие с официальной страницей организатора, поэтому ссылка обязательна. Контактные данные не нужны.</p></div>
       </div>
       <form id="addForm">
         <label>Название<input id="sTitle" type="text" required></label>
@@ -318,9 +318,8 @@ footer{padding-block:120px 0;overflow:hidden}
           <label>Область<select id="sField"></select></label>
           <label>Формат<select id="sType"></select></label>
         </div>
-        <label>Ссылка на анонс или регистрацию<input id="sUrl" type="url" placeholder="https://"></label>
+        <label>Ссылка на официальный анонс или регистрацию<input id="sUrl" type="url" placeholder="https://" required></label>
         <label>О чём событие<textarea id="sDesc"></textarea></label>
-        <label>E-mail для связи<input id="sEmail" type="email" required></label>
         <div><button class="pill" type="submit"><span class="lbl">Отправить на проверку</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></button></div>
         <p class="ok" id="ok" hidden>Спасибо! Анонс отправлен на проверку и появится в расписании после одобрения.</p>
         <p class="err" id="err" role="alert" hidden></p>
@@ -539,7 +538,7 @@ document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
 $("#addForm").onsubmit=async e=>{
   e.preventDefault();const f=e.target,btn=f.querySelector("button[type=submit]");
   const v=id=>($(id)?.value||"").trim();
-  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),url:v("#sUrl"),desc:v("#sDesc"),email:v("#sEmail"),website:v("#sWebsite")};
+  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),url:v("#sUrl"),desc:v("#sDesc"),website:v("#sWebsite")};
   $("#ok").hidden=true;$("#err").hidden=true;btn.disabled=true;
   try{
     const r=await post("/api/submit",body);const j=await r.json().catch(()=>({}));

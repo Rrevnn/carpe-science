@@ -123,7 +123,7 @@ def clean_submission(p):
         v = p.get(k, "")
         return re.sub(r"\s+", " ", str(v)).strip()[:n]
 
-    title, city, d, email = s("title", 200), s("city", 80), s("date", 10), s("email", 120)
+    title, city, d = s("title", 200), s("city", 80), s("date", 10)
     errors = []
     if len(title) < 4:
         errors.append("Укажите название события")
@@ -137,11 +137,9 @@ def clean_submission(p):
                 errors.append("Дата уже прошла")
         except ValueError:
             errors.append("Неверная дата")
-    if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
-        errors.append("Укажите e-mail для связи")
     url = s("url", 500)
-    if url and not re.match(r"^https?://", url):
-        errors.append("Ссылка должна начинаться с http:// или https://")
+    if not re.match(r"^https?://[^\s/]+\.[^\s]+", url):
+        errors.append("Укажите ссылку на официальный анонс или страницу регистрации")
     if errors:
         return None, None, errors
     field = s("field", 20)
@@ -163,11 +161,11 @@ def clean_submission(p):
         "aud": "Для всех",
         "desc": s("desc", 1200),
         "src": url,
-        "srcName": "Страница организатора" if url else "",
+        "srcName": "Страница организатора",
     }
     if ev["kind"] == "learn":
         ev["dEnd"] = d
-    return ev, email, []
+    return ev, "", []
 
 
 # ---------- сессии и защита ----------
