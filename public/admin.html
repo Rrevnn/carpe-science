@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Carpe science · админ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&family=Unbounded:wght@300;400&family=Spectral:wght@300&display=swap">
+<style>
+:root{
+  --bg:#09132a; --ink:#eef1f7; --soft:#aab4ca; --faint:#76829e; --rule:rgba(238,241,247,.11); --line:rgba(238,241,247,.24); --tint:rgba(238,241,247,.035);
+  --ok:#9be3b8; --warn:#ffd28a; --bad:#ffb4a8;
+  --display:"Unbounded","Onest",system-ui,sans-serif; --sans:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif; --serif:"Spectral",Georgia,serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 max(24px,env(safe-area-inset-left,0px)) 80px max(24px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--faint)}
+:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:22px;border-bottom:1px solid var(--rule)}
+.logo{font:400 15px var(--display);text-decoration:none}
+.logo small{font-family:var(--sans);color:var(--faint);font-size:12px;margin-left:10px}
+.btn{background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:9px 18px;font-size:14px;font-weight:500;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line);font-weight:400}
+.btn.bad{background:none;color:var(--bad);border:1px solid rgba(255,180,168,.4);font-weight:400}
+.btn:disabled{opacity:.5;cursor:default}
+h1{font:300 40px/1.1 var(--serif);margin:56px 0 28px}
+h2{font:300 28px/1.15 var(--serif);margin:0;display:flex;align-items:center;gap:12px}
+h2::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.sec{padding-top:64px;display:grid;gap:22px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.kpi{border:1px solid var(--rule);border-radius:10px;padding:16px 16px 14px;display:grid;gap:18px;min-height:112px;align-content:space-between}
+.kpi b{font:300 36px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--soft)}
+.kpi.hot{border-color:var(--warn)}
+.kpi.hot b{color:var(--warn)}
+.chart{border:1px solid var(--rule);border-radius:12px;padding:20px 20px 12px;overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:560px;height:220px}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--soft);margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{border:1px solid var(--rule);border-radius:12px;padding:18px 20px;min-width:0}
+.card h3{margin:0 0 12px;font-size:13px;font-weight:400;color:var(--faint)}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px}
+.list li{display:flex;justify-content:space-between;gap:12px}
+.list li span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list li span:last-child{color:var(--soft);font-variant-numeric:tabular-nums}
+.muted{color:var(--faint);font-size:14px}
+.sub{border:1px solid var(--line);border-radius:12px;padding:20px 22px;display:grid;gap:14px}
+.sub .meta{font-size:12px;color:var(--faint);display:flex;gap:14px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.sub label{display:grid;gap:5px;font-size:12px;color:var(--faint)}
+.sub input,.sub textarea,.sub select{width:100%;background:transparent;border:1px solid var(--rule);border-radius:8px;padding:8px 10px;color:var(--ink);font-size:14px}
+.sub textarea{min-height:70px;resize:vertical}
+.sub .full{grid-column:1/-1}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{background:none;border:1px solid var(--rule);border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--soft);font-size:13px}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:12px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:400;color:var(--faint);font-size:12px}
+tr:last-child td{border-bottom:0}
+td.num{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--soft)}
+.badge{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:999px;padding:0 7px;margin:2px 4px 0 0;color:var(--soft)}
+.badge.ok{color:var(--ok);border-color:rgba(155,227,184,.4)}
+.badge.warn{color:var(--warn);border-color:rgba(255,210,138,.4)}
+.badge.bad{color:var(--bad);border-color:rgba(255,180,168,.4)}
+.search{width:100%;max-width:360px;background:transparent;border:1px solid var(--rule);border-radius:999px;padding:9px 16px}
+.login{max-width:380px;margin:18vh auto 0;display:grid;gap:16px}
+.login h1{margin:0}
+.login input{background:transparent;border:1px solid var(--line);border-radius:999px;padding:11px 18px;font-size:15px}
+.err{color:var(--bad);font-size:14px;margin:0}
+[hidden]{display:none!important}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1100px) and (min-width:901px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:900px){.cols{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="/">carpe science<small>админ</small></a>
+    <button class="btn ghost" id="logout" hidden>Выйти</button>
+  </header>
+
+  <form class="login" id="loginForm" hidden>
+    <h1>Вход</h1>
+    <input id="pw" type="password" placeholder="Пароль" autocomplete="current-password" required>
+    <button class="btn" type="submit">Войти</button>
+    <p class="err" id="loginErr" hidden></p>
+  </form>
+
+  <main id="app" hidden>
+    <h1>Обзор</h1>
+    <div class="kpis" id="kpis"></div>
+
+    <section class="sec">
+      <h2>Посещаемость за 30 дней</h2>
+      <div class="chart"><div class="legend"><span><i style="background:var(--line)"></i>просмотры</span><span><i style="background:var(--ink)"></i>посетители</span></div><div id="chart"></div></div>
+      <div class="cols">
+        <div class="card"><h3>Откуда приходят</h3><ul class="list" id="refs"></ul></div>
+        <div class="card"><h3>Больше всего отметок «был(а)»</h3><ul class="list" id="topAtt"></ul></div>
+        <div class="card"><h3>Чаще открывают страницу организатора</h3><ul class="list" id="topClick"></ul></div>
+      </div>
+    </section>
+
+    <section class="sec" id="subs">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <h2>Заявки организаторов</h2>
+        <div class="tabs" id="subTabs"><button data-s="pending" aria-pressed="true">На одобрении</button><button data-s="approved" aria-pressed="false">Одобренные</button><button data-s="rejected" aria-pressed="false">Отклонённые</button></div>
+      </div>
+      <div id="subList" style="display:grid;gap:12px"></div>
+    </section>
+
+    <section class="sec">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <h2>События в афише</h2>
+        <input class="search" id="evSearch" type="search" placeholder="Поиск по названию или городу">
+      </div>
+      <p class="muted" id="evNote"></p>
+      <div class="tablewrap"><table><thead><tr><th>Дата</th><th>Событие</th><th>Статус</th><th></th></tr></thead><tbody id="evRows"></tbody></table></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+const fd=s=>{if(!s)return"";const[y,m,d]=s.slice(0,10).split("-").map(Number);return d+" "+MON[m-1]};
+const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат"};
+const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль"};
+let S=null,subFilter="pending";
+
+function post(u,b){return fetch(u,{method:"POST",headers:{"Content-Type":"application/json","X-Carpe":"1"},body:JSON.stringify(b||{})})}
+
+async function load(){
+  const r=await fetch("/api/admin/summary",{headers:{"Accept":"application/json"}});
+  if(r.status===401){$("#loginForm").hidden=false;$("#app").hidden=true;$("#logout").hidden=true;return}
+  if(!r.ok){$("#loginForm").hidden=false;$("#loginErr").textContent="Сервер недоступен";$("#loginErr").hidden=false;return}
+  S=await r.json();$("#loginForm").hidden=true;$("#app").hidden=false;$("#logout").hidden=false;render();
+}
+
+function render(){
+  const v30=S.days.reduce((a,d)=>a+d.views,0),u30=S.days.reduce((a,d)=>a+d.visitors,0);
+  const k=[["Просмотров за 30 дней",v30],["Посетителей за 30 дней",u30],["Отметок «был(а)», всего",S.attendTotal],["Событий в афише",S.counts.upcoming],["Городов в афише",S.counts.cities],["Заявок на одобрении",S.counts.pending,S.counts.pending>0]];
+  $("#kpis").innerHTML=k.map(([t,n,hot])=>`<div class="kpi${hot?" hot":""}"><b>${esc(n)}</b><span>${t}</span></div>`).join("");
+  chart();
+  const li=(rows,empty)=>rows.length?rows.join(""):`<li class="muted">${empty}</li>`;
+  $("#refs").innerHTML=li(S.refs.map(r=>`<li><span>${esc(r.ref)}</span><span>${r.count}</span></li>`),"Пока прямые заходы");
+  $("#topAtt").innerHTML=li(S.topAttended.map(e=>`<li><span title="${esc(e.title)}">${esc(e.title)}</span><span>${e.attended}</span></li>`),"Пока нет отметок");
+  $("#topClick").innerHTML=li(S.topClicked.map(e=>`<li><span title="${esc(e.title)}">${esc(e.title)}</span><span>${e.clicks}</span></li>`),"Пока нет переходов");
+  subs();events();
+}
+
+function chart(){
+  const d=S.days,W=900,H=200,pl=34,pb=24,pt=8,iw=W-pl-8,ih=H-pb-pt;
+  const max=Math.max(4,...d.map(x=>x.views));const nice=Math.ceil(max/4)*4;
+  const bw=iw/d.length;const y=v=>pt+ih-(v/nice)*ih;
+  let g="";
+  for(let i=0;i<=4;i++){const v=nice*i/4,yy=y(v);g+=`<line x1="${pl}" x2="${W-8}" y1="${yy}" y2="${yy}" stroke="var(--rule)"/><text x="${pl-8}" y="${yy+4}" text-anchor="end" font-size="11" fill="var(--faint)">${v}</text>`}
+  d.forEach((x,i)=>{const h=(x.views/nice)*ih;g+=`<rect x="${pl+i*bw+2}" y="${pt+ih-h}" width="${bw-4}" height="${h}" rx="2" fill="var(--line)"><title>${fd(x.day)}: ${x.views} просмотров, ${x.visitors} посетителей</title></rect>`;
+    if(i%5===0||i===d.length-1)g+=`<text x="${pl+i*bw+bw/2}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--faint)">${fd(x.day)}</text>`});
+  const pts=d.map((x,i)=>`${pl+i*bw+bw/2},${y(x.visitors)}`).join(" ");
+  g+=`<polyline points="${pts}" fill="none" stroke="var(--ink)" stroke-width="1.5"/>`;
+  const last=d[d.length-1];g+=`<circle cx="${pl+(d.length-1)*bw+bw/2}" cy="${y(last.visitors)}" r="3.5" fill="var(--ink)"/>`;
+  $("#chart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Просмотры и посетители по дням">${g}</svg>`;
+}
+
+function subs(){
+  const list=S.submissions.filter(s=>s.status===subFilter);
+  if(!list.length){$("#subList").innerHTML=`<p class="muted">${subFilter==="pending"?"Новых заявок нет.":"Пока пусто."}</p>`;return}
+  $("#subList").innerHTML=list.map(s=>{const e=s.data,ro=s.status!=="pending";
+    const inp=(k,l,full,type)=>`<label class="${full?"full":""}">${l}${type==="area"?`<textarea data-k="${k}" ${ro?"readonly":""}>${esc(e[k])}</textarea>`:`<input data-k="${k}" value="${esc(e[k])}" ${type?`type="${type}"`:""} ${ro?"readonly":""}>`}</label>`;
+    const sel=(k,l,map)=>`<label>${l}<select data-k="${k}" ${ro?"disabled":""}>${Object.entries(map).map(([a,b])=>`<option value="${a}" ${e[k]===a?"selected":""}>${b}</option>`).join("")}</select></label>`;
+    return `<div class="sub" data-id="${s.id}">
+      <div class="meta"><span>Заявка №${s.id}</span><span>Получена ${fd(s.created)}</span><span>Контакт: ${esc(s.contact)}</span>${s.decided?`<span>Решение ${fd(s.decided)}</span>`:""}</div>
+      <div class="grid2">${inp("title","Название",true)}${inp("d","Дата",false,"date")}${inp("time","Время")}${inp("city","Город")}${inp("place","Площадка")}${inp("who","Лектор")}${inp("org","Организатор")}${sel("field","Область",FIELDS)}${sel("type","Формат",TYPES)}${inp("price","Стоимость")}${inp("aud","Для кого")}${inp("src","Ссылка",true)}${inp("desc","Описание",true,"area")}</div>
+      ${ro?"":`<div class="acts"><button class="btn" data-act="approve">Опубликовать</button><button class="btn bad" data-act="reject">Отклонить</button></div>`}
+    </div>`}).join("");
+}
+
+function events(){
+  const q=($("#evSearch").value||"").trim().toLowerCase();
+  const rows=S.events.filter(e=>!q||(e.title+" "+e.city).toLowerCase().includes(q));
+  $("#evNote").textContent=`Предстоящих: ${S.events.length}. Скрытые события не показываются на сайте; скрытие можно отменить.${S.updated?" Данные сборщика обновлены "+fd(S.updated)+".":""}`;
+  $("#evRows").innerHTML=rows.slice(0,400).map(e=>`<tr><td class="num">${fd(e.d)}</td><td>${e.src?`<a href="${esc(e.src)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title)}<br><span class="muted">${esc(e.city||"")}</span></td><td>${e.hidden?'<span class="badge bad">скрыто</span>':""}${e.organizer?'<span class="badge">от организатора</span>':e.auto?'<span class="badge">сборщик</span>':""}${e.verified?'<span class="badge ok">проверено</span>':'<span class="badge warn">не проверено</span>'}</td><td><button class="btn ghost" data-ev="${e.id}" data-to="${e.hidden?"show":"hide"}">${e.hidden?"Показать":"Скрыть"}</button></td></tr>`).join("")||`<tr><td colspan="4" class="muted">Ничего не найдено</td></tr>`;
+}
+
+$("#loginForm").onsubmit=async ev=>{ev.preventDefault();$("#loginErr").hidden=true;
+  const r=await post("/api/admin/login",{password:$("#pw").value});const j=await r.json().catch(()=>({}));
+  if(!r.ok){$("#loginErr").textContent=j.error||"Не получилось войти";$("#loginErr").hidden=false;return}
+  $("#pw").value="";load()};
+$("#logout").onclick=async()=>{await post("/api/admin/logout");load()};
+$("#subTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;subFilter=b.dataset.s;document.querySelectorAll("#subTabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));subs()};
+$("#subList").onclick=async e=>{const b=e.target.closest("[data-act]");if(!b)return;const card=b.closest(".sub");const id=card.dataset.id;
+  const edits={};card.querySelectorAll("[data-k]").forEach(i=>edits[i.dataset.k]=i.value.trim());
+  card.querySelectorAll("button").forEach(x=>x.disabled=true);
+  const r=await post(`/api/admin/submission/${id}/${b.dataset.act}`,{edits});
+  if(!r.ok){card.querySelectorAll("button").forEach(x=>x.disabled=false);alert("Не получилось сохранить");return}
+  load()};
+$("#evSearch").oninput=events;
+$("#evRows").onclick=async e=>{const b=e.target.closest("[data-ev]");if(!b)return;b.disabled=true;
+  const r=await post(`/api/admin/event/${b.dataset.ev}/${b.dataset.to}`);if(r.ok)load();else b.disabled=false};
+load();
+</script>
+</body>
+</html>

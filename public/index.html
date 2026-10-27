@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Научные лекции, фестивали и школы по всей России в одном расписании. Время ловить науку и расширять горизонты.">
+<meta property="og:title" content="Carpe science">
+<meta property="og:description" content="Научные лекции, фестивали и школы по всей России в одном расписании.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2309132a'/%3E%3Ccircle cx='14' cy='8' r='3' fill='%23eef1f7'/%3E%3Cpath d='M14 14v6c0 4 2 6 6 6' fill='none' stroke='%23eef1f7' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>Carpe science</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&family=Unbounded:wght@300;400&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap">
+<style>
+/* Layout: однотонный тёмно-синий лист. Огромный словесный знак сверху и снизу, «лесенка» заголовков разделов, тонкие обводки, кнопки-пилюли с круглой стрелкой. Unbounded — знак и цифры, Spectral — крупный текст, Onest — всё остальное */
+:root{
+  --bg:#09132a; --ink:#eef1f7; --soft:#aab4ca; --faint:#76829e; --rule:rgba(238,241,247,.11); --line:rgba(238,241,247,.24); --tint:rgba(238,241,247,.035);
+  --display:"Unbounded","Onest",system-ui,sans-serif;
+  --sans:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Spectral",Georgia,"Times New Roman",serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.haze{position:absolute;left:0;right:0;top:0;height:980px;overflow:hidden;pointer-events:none;z-index:0}
+.haze i{position:absolute;border-radius:50%;filter:blur(70px)}
+.haze i:nth-child(1){width:70vw;height:260px;left:-8vw;top:180px;background:rgba(74,104,178,.30);transform:rotate(-6deg)}
+.haze i:nth-child(2){width:55vw;height:200px;right:-10vw;top:320px;background:rgba(150,175,230,.14);transform:rotate(4deg)}
+.haze i:nth-child(3){width:40vw;height:340px;left:28vw;top:470px;background:rgba(36,60,128,.45)}
+body{position:relative}
+.haze.foot-h{top:auto;bottom:0;height:640px}
+.haze.foot-h i:nth-child(1){width:65vw;height:240px;left:12vw;top:auto;bottom:90px;background:rgba(74,104,178,.30);transform:rotate(3deg)}
+.haze.foot-h i:nth-child(2){width:45vw;height:200px;left:auto;right:-6vw;top:auto;bottom:220px;background:rgba(150,175,230,.12)}
+.wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+a{color:inherit;text-decoration-color:var(--faint);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+::selection{background:var(--ink);color:var(--bg)}
+
+/* шапка */
+.top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-block:22px}
+.logo{font:400 15px/1 var(--display);letter-spacing:-.01em;text-decoration:none}
+.menu{display:flex;gap:26px;flex-wrap:wrap;font-size:14px}
+.menu a{color:var(--soft);text-decoration:none;transition:color .2s}
+.menu a:hover{color:var(--ink)}
+
+/* кнопка-пилюля с круглой стрелкой */
+.pill{font-family:var(--sans);display:inline-flex;align-items:center;gap:3px;text-decoration:none;background:none;border:0;padding:0;cursor:pointer;color:var(--bg)}
+.pill .lbl{background:var(--ink);border-radius:999px;padding:9px 18px;font-size:14px;font-weight:500;line-height:1.2;transition:opacity .2s}
+.pill .arr{width:38px;height:38px;border-radius:50%;background:var(--ink);display:grid;place-items:center;transition:transform .25s}
+.pill .arr svg{width:14px;height:14px}
+.pill:hover .arr{transform:rotate(-45deg)}
+.pill.down:hover .arr{transform:translateY(2px)}
+.pill.ghost{color:var(--ink)}
+.pill.ghost .lbl,.pill.ghost .arr{background:none;border:1px solid var(--line)}
+.pill.ghost .arr{width:36px;height:36px}
+
+/* первый экран */
+.hero{padding-block:36px 0}
+.hero-top{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:13px;color:var(--soft);line-height:1.45}
+.hero-top p{margin:0;max-width:26ch}
+.wm{display:block;width:max-content;max-width:none;font:400 100px/1 var(--display);letter-spacing:-.045em;white-space:nowrap;margin:28px 0 0;padding-top:.08em}
+.ii{position:relative}
+.ii b{display:inline-block;width:0;height:0;vertical-align:baseline;position:relative}
+.iota{display:inline-block;height:1ex;width:auto;vertical-align:baseline;overflow:visible;margin:0 -.03em 0 .035em}
+.ii b::after{content:"";position:absolute;left:calc(var(--half,.2em) * -1);bottom:calc(1ex + .075em);width:.135em;height:.135em;background:currentColor;border-radius:50%;transform:translateX(-50%)}
+.hero-body{padding-block:40px 64px}
+.hero-body .lead{display:grid;gap:22px;max-width:640px}
+.lead h1{font:300 clamp(28px,3.4vw,40px)/1.18 var(--serif);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lead p{margin:0;color:var(--soft);font-size:16px;max-width:52ch}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{border:1px solid var(--rule);border-radius:10px;padding:18px 18px 16px;display:grid;gap:26px;align-content:space-between;min-height:132px}
+.stat b{font:300 44px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--soft);line-height:1.35}
+
+/* заголовки разделов «лесенкой» */
+.sh{font:300 clamp(30px,4vw,44px)/1.08 var(--serif);margin:0;letter-spacing:-.01em;display:grid}
+.sh span:first-child{display:flex;align-items:center;gap:14px}
+.sh span:first-child::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink);flex:none}
+.sh span+span{padding-left:2.2em}
+.section{padding-block:112px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:40px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{background:none;border:1px solid var(--rule);border-radius:999px;padding:7px 15px;cursor:pointer;color:var(--soft);font-size:14px;transition:color .2s,border-color .2s}
+.tabs button:hover{color:var(--ink);border-color:var(--line)}
+.tabs button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button span{font-variant-numeric:tabular-nums;opacity:.6;margin-left:5px;font-size:12px}
+
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.bar label{display:grid;gap:7px;font-size:12px;color:var(--faint)}
+.bar select,.bar input{height:42px;border:1px solid var(--rule);background-color:transparent;border-radius:999px;padding:0 16px;font-size:15px;color:var(--ink);cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+.bar select:hover,.bar input:hover,.bar select:focus,.bar input:focus{border-color:var(--line);outline:none}
+.bar select{padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,var(--soft) 50%),linear-gradient(135deg,var(--soft) 50%,transparent 50%);background-position:right 19px top 52%,right 15px top 52%;background-size:4px 4px;background-repeat:no-repeat}
+.bar select option{background:var(--bg);color:var(--ink)}
+.bar .search{flex:1 1 240px;min-width:0}
+.bar .search input{width:100%;cursor:text}
+.bar .search input::placeholder{color:var(--faint)}
+
+.under{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-block:20px 0;font-size:13px;color:var(--soft)}
+.when{display:flex;gap:4px;flex-wrap:wrap}
+.when button{background:none;border:1px solid transparent;border-radius:999px;padding:5px 12px;cursor:pointer;color:var(--soft);font-size:13px;transition:color .2s,border-color .2s}
+.when button:hover{color:var(--ink)}
+.when button[aria-pressed="true"]{color:var(--ink);border-color:var(--line)}
+.count{font-variant-numeric:tabular-nums}
+.count button{background:none;border:0;padding:0;margin-left:14px;color:var(--ink);cursor:pointer;font-size:13px;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+#updated{color:var(--faint);margin-left:14px}
+
+/* расписание */
+.days{padding-block:4px 0}
+.month{display:flex;align-items:baseline;gap:12px;padding-block:56px 14px;border-bottom:1px solid var(--line)}
+.month span{font:400 20px var(--display);letter-spacing:-.01em;text-transform:lowercase}
+.month small{font-size:13px;color:var(--faint);font-variant-numeric:tabular-nums}
+.day{display:grid;grid-template-columns:132px 1fr;gap:0 28px;border-bottom:1px solid var(--rule)}
+.dlabel{padding-block:24px;display:flex;align-items:baseline;gap:12px}
+.dlabel b{font:300 30px/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em;min-width:2ch}
+.dlabel span{font-size:13px;color:var(--soft);line-height:1.35}
+.dlabel span em{display:block;font-style:normal;color:var(--faint)}
+.items{min-width:0}
+.ev+.ev{border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:56px 1fr auto;gap:18px;text-align:left;background:none;border:0;padding:24px 14px;margin-inline:-14px;width:calc(100% + 28px);cursor:pointer;border-radius:10px;transition:background .2s}
+.row:hover{background:var(--tint)}
+.time{font-variant-numeric:tabular-nums;color:var(--soft);font-size:14px;padding-top:3px}
+.main{min-width:0;display:grid;gap:4px}
+.ttl{font-weight:500;font-size:18px;line-height:1.35;margin:0;text-wrap:pretty;letter-spacing:-.005em}
+.who{font-size:14px}
+.where{color:var(--soft);font-size:14px}
+.kind{font-size:12px;color:var(--faint);margin-bottom:3px}
+.right{display:grid;justify-items:end;align-content:start;gap:8px;font-size:13px;color:var(--soft);white-space:nowrap;padding-top:2px}
+.right .plus{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--ink);transition:transform .25s}
+.row[aria-expanded="true"] .plus{transform:rotate(45deg)}
+.right .dl{color:var(--ink)}
+.mark{color:var(--ink)}
+.new{color:var(--ink);border:1px solid var(--line);padding:0 7px;border-radius:999px;margin-left:2px}
+
+.detail{display:grid;grid-template-columns:56px 1fr;gap:18px;padding:0 0 32px}
+.detail>div{grid-column:2;display:grid;gap:20px;max-width:640px;border:1px solid var(--rule);border-radius:12px;padding:24px 26px}
+.detail p{margin:0;font:300 19px/1.5 var(--serif)}
+.facts{display:grid;grid-template-columns:120px 1fr;gap:9px 20px;margin:0;font-size:14px;border-top:1px solid var(--rule);padding-top:18px}
+.facts dt{color:var(--faint);font-size:13px}
+.facts dd{margin:0}
+.acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:14px;padding-top:2px}
+.link{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:9px 18px;cursor:pointer;font-size:14px;transition:border-color .2s}
+.link:hover{border-color:var(--ink)}
+.attend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:18px}
+.att{display:inline-flex;align-items:center;gap:10px;background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:9px 18px 9px 14px;cursor:pointer;font-size:14px;transition:border-color .2s,background .2s}
+.att:hover{border-color:var(--ink)}
+.att .att-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid currentColor}
+.att.on{background:var(--ink);color:var(--bg);border-color:var(--ink);cursor:default}
+.att.on .att-dot{background:currentColor}
+.att-n{font-size:13px;color:var(--soft)}
+.err{color:#ffb4a8;margin:0;font-size:14px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.empty{padding-block:72px;color:var(--soft);font:300 22px var(--serif)}
+
+/* вопросы */
+.faq-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:40px}
+.faq{display:grid;border-top:1px solid var(--rule)}
+.faq details{border-bottom:1px solid var(--rule)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font-size:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary i{font-style:normal;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;flex:none;transition:transform .25s}
+.faq details[open] summary i{transform:rotate(45deg)}
+.faq details p{margin:0 0 22px;color:var(--soft);max-width:56ch}
+
+/* форма */
+.submit-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:40px}
+.submit-grid .intro-text{display:grid;gap:12px;align-content:start;color:var(--soft);max-width:40ch}
+.submit-grid .intro-text p{margin:0}
+form{display:grid;gap:14px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+form label{display:grid;gap:7px;font-size:12px;color:var(--faint)}
+form input,form select,form textarea{border:1px solid var(--rule);background:transparent;border-radius:999px;padding:11px 16px;font-size:15px;color:var(--ink);outline:none;width:100%;transition:border-color .2s}
+form textarea{border-radius:18px;min-height:96px;resize:vertical}
+form input:focus,form select:focus,form textarea:focus{border-color:var(--line)}
+form select{-webkit-appearance:none;appearance:none;cursor:pointer;padding-right:36px;background-image:linear-gradient(45deg,transparent 50%,var(--soft) 50%),linear-gradient(135deg,var(--soft) 50%,transparent 50%);background-position:right 21px top 52%,right 17px top 52%;background-size:4px 4px;background-repeat:no-repeat}
+form select option{background:var(--bg)}
+.ok{font:300 19px var(--serif);margin:0}
+
+/* подвал */
+footer{padding-block:120px 0;overflow:hidden}
+.foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;border-top:1px solid var(--rule);padding-top:36px;font-size:14px}
+.foot h3{margin:0 0 14px;font-size:12px;font-weight:400;color:var(--faint);display:flex;align-items:center;gap:8px}
+.foot h3::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--faint)}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.foot a{text-decoration:none;color:var(--soft)}
+.foot a:hover{color:var(--ink)}
+.foot .ready{font:300 30px/1.1 var(--serif);display:grid;gap:18px;align-content:start}
+.foot .ready>div:first-child span{display:block}
+.foot .ready>div:first-child span+span{padding-left:1.4em}
+.fine{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--faint);padding-block:56px 48px}
+.wm.big{margin:0;padding-bottom:.02em;line-height:.86;margin-bottom:-.12em}
+
+@media (max-width:860px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .faq-grid,.submit-grid{grid-template-columns:1fr;gap:24px}
+  .foot{grid-template-columns:1fr 1fr}
+  .foot .ready{grid-column:1/-1}
+  .day{grid-template-columns:1fr}
+  .dlabel{padding-block:22px 0}
+  .section{padding-block:80px 0}
+}
+@media (max-width:520px){
+  .menu{display:none}
+  .row{grid-template-columns:1fr auto;gap:6px 12px;padding-block:18px 20px}
+  .time{grid-column:1}
+  .main{grid-column:1}
+  .right{grid-column:2;grid-row:1/3}
+  .right>span:not(.plus){display:none}
+  .detail{grid-template-columns:1fr}
+  .detail>div{grid-column:1;padding:18px}
+  .facts{grid-template-columns:1fr;gap:2px}
+  .facts dd{margin-bottom:8px}
+  .f2{grid-template-columns:1fr}
+  .bar label:not(.search){flex:1 1 40%}
+  .bar select{width:100%}
+  .stat{min-height:110px}
+  .stat b{font-size:36px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+
+</head>
+<body>
+<div class="haze" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#top" id="top">carpe science</a>
+    <nav class="menu" aria-label="Разделы сайта">
+      <a href="#schedule">Расписание</a>
+      <a href="#faq">Вопросы</a>
+      <a href="#add">Организаторам</a>
+    </nav>
+    <a class="pill" href="#add"><span class="lbl">Добавить событие</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-top">
+      <p>Научные лекции, фестивали и школы по всей России</p>
+      <p>Обновляется по понедельникам и четвергам</p>
+    </div>
+    <div class="wm" data-fit="0.9" aria-label="carpe science">carpe sc<span class="ii"><svg class="iota" viewBox="0 0 46 100" aria-hidden="true"><path d="M10 8 V50 C10 80 21 92 38 92" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg><b></b></span>ence</div>
+    <div class="hero-body">
+      <div class="lead">
+        <h1>Время ловить науку и расширять горизонты</h1>
+        <p>Мы собираем открытые лекции, научные кафе, фестивали и школы из лекториев, музеев и университетов, чтобы вам было проще выбрать, куда пойти на этой неделе.</p>
+        <div><a class="pill down" href="#schedule"><span class="lbl">Смотреть расписание</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 2v10M3 8l4 4 4-4"/></svg></span></a></div>
+      </div>
+    </div>
+    <div class="stats" id="factsLine"></div>
+  </section>
+
+  <section class="section" id="schedule">
+    <div class="section-head">
+      <h2 class="sh"><span>ближайшие</span><span>события</span></h2>
+      <div class="tabs nav" role="group" aria-label="Раздел">
+        <button id="t-events" data-tab="events" aria-current="true">Мероприятия<span id="n-events"></span></button>
+        <button id="t-learn" data-tab="learn" aria-current="false">Школы и программы<span id="n-learn"></span></button>
+        <button id="t-saved" data-tab="saved" aria-current="false">Сохранённое<span id="n-saved"></span></button>
+        <button id="t-past" data-tab="past" aria-current="false">Прошедшие</button>
+      </div>
+    </div>
+    <div class="bar" id="bar">
+      <label class="search">Поиск<input id="q" type="search" placeholder="Лектор, тема, площадка"></label>
+      <label>Город<select id="fCity"></select></label>
+      <label>Область<select id="fField"></select></label>
+      <label>Формат<select id="fType"></select></label>
+      <label>Участие<select id="fMode"><option value="">Любое</option><option value="offline">Очно</option><option value="online">Есть онлайн</option></select></label>
+    </div>
+    <div class="under">
+      <div class="when" role="group" aria-label="Период">
+        <button data-when="" aria-pressed="true">Все даты</button>
+        <button data-when="week" aria-pressed="false">Ближайшие 7 дней</button>
+        <button data-when="weekend" aria-pressed="false">Выходные</button>
+        <button data-when="month" aria-pressed="false">Этот месяц</button>
+      </div>
+      <div class="count"><span id="count"></span><span id="updated"></span></div>
+    </div>
+    <main class="days" id="list"></main>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="faq-grid">
+      <h2 class="sh"><span>вопросы?</span><span>отвечаем</span></h2>
+      <div class="faq">
+        <details><summary>Откуда берутся события?<i aria-hidden="true">+</i></summary><p>Из афиш лекториев, музеев, университетов, научных центров и календаря «Элементов». Дважды в неделю мы проверяем источники и добавляем новые анонсы. У каждого события есть ссылка на страницу организатора.</p></details>
+        <details><summary>Что значит пометка «новое, не проверено»?<i aria-hidden="true">+</i></summary><p>Событие нашлось автоматически, и его ещё не сверили вручную. Перед поездкой откройте страницу организатора: время и формат иногда меняются.</p></details>
+        <details><summary>Это бесплатно?<i aria-hidden="true">+</i></summary><p>Пользоваться расписанием бесплатно. Многие лекции тоже бесплатные, но часто нужна регистрация. Стоимость и условия указаны в карточке события.</p></details>
+        <details><summary>Как добавить своё мероприятие?<i aria-hidden="true">+</i></summary><p>Заполните форму ниже. Мы проверим анонс и опубликуем его. Подходят открытые лекции, фестивали, экскурсии в лаборатории, научные кафе, школы и курсы.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="add">
+    <div class="submit-grid">
+      <div style="display:grid;gap:28px;align-content:start">
+        <h2 class="sh"><span>добавить</span><span>событие</span></h2>
+        <div class="intro-text"><p>Проводите научное мероприятие? Пришлите анонс, и после проверки он появится в расписании. Публикация бесплатная.</p></div>
+      </div>
+      <form id="addForm">
+        <label>Название<input id="sTitle" type="text" required></label>
+        <div class="f2">
+          <label>Лектор или ведущий<input id="sWho" type="text"></label>
+          <label>Организатор<input id="sOrg" type="text"></label>
+        </div>
+        <div class="f2">
+          <label>Дата<input id="sDate" type="date" required></label>
+          <label>Время<input id="sTime" type="text" placeholder="19:00"></label>
+        </div>
+        <div class="f2">
+          <label>Город<input id="sCity" type="text" required placeholder="или «онлайн»"></label>
+          <label>Площадка и адрес<input id="sPlace" type="text"></label>
+        </div>
+        <div class="f2">
+          <label>Область<select id="sField"></select></label>
+          <label>Формат<select id="sType"></select></label>
+        </div>
+        <label>Ссылка на анонс или регистрацию<input id="sUrl" type="url" placeholder="https://"></label>
+        <label>О чём событие<textarea id="sDesc"></textarea></label>
+        <label>E-mail для связи<input id="sEmail" type="email" required></label>
+        <div><button class="pill" type="submit"><span class="lbl">Отправить на проверку</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></button></div>
+        <p class="ok" id="ok" hidden>Спасибо! Анонс отправлен на проверку и появится в расписании после одобрения.</p>
+        <p class="err" id="err" role="alert" hidden></p>
+        <label class="hp" aria-hidden="true">Не заполняйте это поле<input id="sWebsite" type="text" tabindex="-1" autocomplete="off"></label>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot">
+      <div class="ready"><div><span>готовы</span><span>к открытиям?</span></div><div><a class="pill ghost" href="#schedule"><span class="lbl">К расписанию</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 12V2M3 6l4-4 4 4"/></svg></span></a></div></div>
+      <div><h3>разделы</h3><ul><li><a href="#schedule">Расписание</a></li><li><a href="#faq">Вопросы</a></li><li><a href="#add">Добавить событие</a></li></ul></div>
+      <div><h3>источники</h3><ul><li><a href="https://elementy.ru/events" target="_blank" rel="noopener">«Элементы»</a></li><li><a href="https://polymus.ru/pages/calendar" target="_blank" rel="noopener">Политехнический музей</a></li><li><a href="https://www.skoltech.ru/lecture-hub" target="_blank" rel="noopener">Сколтех</a></li><li><a href="https://pu-ocean.ru/2027/winterschool" target="_blank" rel="noopener">Плавучий университет</a></li><li><a href="https://siriusuniversity.ru/admission/educational-modules-and-activities/" target="_blank" rel="noopener">Университет «Сириус»</a></li></ul></div>
+    </div>
+    <div class="fine"><span>© 2026 carpe science</span><span>Время ловить науку и расширять горизонты</span></div>
+    <div class="wm big" data-fit="0.995" aria-hidden="true">carpe sc<span class="ii"><svg class="iota" viewBox="0 0 46 100" aria-hidden="true"><path d="M10 8 V50 C10 80 21 92 38 92" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg><b></b></span>ence</div>
+  </footer>
+</div>
+
+<div class="haze foot-h" aria-hidden="true"><i></i><i></i></div>
+<script>
+const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат"};
+const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль"};
+const MON=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const MONN=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+const WD=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+const EL=id=>"https://elementy.ru/events/"+id;
+const POLY="https://polymus.ru/pages/calendar";
+const SBER="https://sberlabs.com/sberscienceaward_lectures";
+const POLY_SCHOOL={org:"Политехнический музей",place:"Библиотека иностранной литературы",addr:"Москва, ул. Николоямская, 1",price:"Вход по регистрации",reg:"Регистрация на сайте Политехнического музея",aud:"Взрослые и старшие школьники",src:POLY,srcName:"Афиша Политехнического музея",series:"Вечерняя школа Политеха: короткие занятия по школьным наукам для взрослых"};
+const POLY_CAFE={org:"Политехнический музей",place:"Ресторан «Дом культур»",addr:"Москва",price:"Вход по регистрации",reg:"Регистрация на сайте Политехнического музея",aud:"Взрослые",src:POLY,srcName:"Афиша Политехнического музея",series:"Научное кафе Политеха: разговор с учёным или инженером в неформальной обстановке"};
+const SBER_C={org:"Научная премия Сбера, региональный лекторий лауреатов",price:"Уточняйте у вуза",reg:"Ключевые лекции транслируются онлайн на сайте премии",aud:"Студенты, преподаватели, все интересующиеся",src:SBER,srcName:"Расписание лекций лауреатов",series:"Третий региональный сезон лекций лауреатов премии 2025 года",time:"время уточняется",online:true};
+
+const E=[
+ {d:"2026-11-01",time:"15:00",title:"Солнце и другие звёзды",who:"Дмитрий Вибе",whoAbout:"астрофизик",field:"space",type:"lecture",city:"Москва",place:"ВДНХ, центр «Космонавтика и авиация»",org:"Лекторий ВДНХ",price:"Уточняйте у организатора",aud:"Для всех",desc:"Лекция о том, как устроены звёзды и что наше Солнце рассказывает учёным о звёздах вообще.",src:EL(450787),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-02",time:"19:00",title:"Астрономия: точное время",field:"space",type:"school",city:"Москва",...POLY_SCHOOL,desc:"Как астрономия связана с измерением времени: от наблюдений за небом до современных эталонов."},
+ {d:"2026-11-02",time:"19:30",title:"Всё, что вы хотели знать о вакцинах",who:"Алексей Водовозов",whoAbout:"врач, научный журналист",field:"med",type:"lecture",city:"Санкт-Петербург",online:true,place:"Сообщество «ВСмысле»",org:"«ВСмысле»",price:"Уточняйте у организатора",aud:"Для всех",desc:"Как работают вакцины, откуда берутся мифы о них и как разобраться, чему верить. Можно прийти очно или подключиться к трансляции.",src:EL(450785),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-03",time:"19:00",title:"Расстояния в расширяющейся Вселенной",who:"Сергей Попов",whoAbout:"астрофизик",field:"space",type:"course",city:"Москва",place:"Лекторий «Архэ»",org:"Культурно-просветительский центр «Архэ»",price:"Уточняйте у организатора",aud:"Взрослые",series:"Вторая лекция курса",desc:"Как астрономы измеряют расстояния до далёких галактик и что значит «расстояние», когда сама Вселенная расширяется.",src:EL(450632),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-03",time:"19:00",title:"Сосудистые растения: два пути эволюции",who:"Константин Фомичёв",field:"bio",type:"course",city:"Москва",place:"Лекторий «Архэ»",org:"Культурно-просветительский центр «Архэ»",price:"Уточняйте у организатора",aud:"Взрослые",series:"Первая лекция курса о сосудистых растениях; продолжение 10 ноября",desc:"Вводная лекция курса: какие две большие ветви есть у сосудистых растений и как они разошлись в ходе эволюции.",src:EL(450634),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-05",time:"19:00",title:"ИИ в структурной биоинформатике: от предсказания структуры белка до разработки лекарств",who:"Дмитрий Иванков",whoAbout:"Сколтех",field:"bio",type:"lecture",city:"Москва",place:"Парк «Зарядье», лекторий «Метафаза»",org:"Сколтех и парк «Зарядье»",price:"Уточняйте при регистрации",reg:"Регистрация через Timepad, ссылка на странице лектория Сколтеха",aud:"Взрослые и студенты",desc:"Как нейросети научились предсказывать форму белков и как это меняет поиск новых лекарств.",src:"https://www.skoltech.ru/lecture-hub",srcName:"Лекторий Сколтеха"},
+ {d:"2026-11-05",time:"19:00",title:"Свет, который у вас в голове",who:"Георгий Носов",field:"med",type:"lecture",city:"Москва",online:true,place:"Научно-популярная библиотека «Научка»",org:"«Научка»",price:"Уточняйте у организатора",aud:"Для всех",desc:"Лекция о свете и мозге. Можно прийти в библиотеку или смотреть онлайн.",src:EL(450794),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-05",time:"19:00",title:"Смарт-телескопы: умная обсерватория в рюкзаке",who:"Руслан Ильницкий",field:"space",type:"lecture",city:"Москва",online:true,place:"Научно-популярная библиотека «Научка»",org:"«Научка»",price:"Уточняйте у организатора",aud:"Для всех",desc:"Что такое компактные «умные» телескопы, что с ними можно увидеть и снять любителю без обсерватории.",src:EL(450793),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-07",time:"15:00",title:"Что держит нас вместе? Как возникает социальный порядок",who:"Дамир Саунин",field:"hum",type:"lecture",city:"Москва",place:"Школа-экстернат ЭЛТРИ",org:"Цикл «Умная суббота»",price:"Уточняйте у организатора",aud:"Для всех",desc:"Почему люди договариваются и соблюдают правила и как из множества отдельных решений складывается общество.",src:EL(450750),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-09",time:"19:00",title:"Химия: кислотность",field:"chem",type:"school",city:"Москва",...POLY_SCHOOL,desc:"Что такое кислоты и основания, как измеряют кислотность и где она встречается в повседневной жизни."},
+ {d:"2026-11-09",time:"19:30",title:"Человек в космосе",who:"Владимир Сурдин",whoAbout:"астроном",field:"space",type:"lecture",city:"Санкт-Петербург",online:true,place:"Сообщество «ВСмысле»",org:"«ВСмысле»",price:"Уточняйте у организатора",aud:"Для всех",desc:"Что происходит с человеком в космосе и каким может быть будущее пилотируемой космонавтики. Есть трансляция.",src:EL(450546),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-10",time:"19:00",title:"Плауновые",who:"Константин Фомичёв",field:"bio",type:"course",city:"Москва",place:"Лекторий «Архэ»",org:"Культурно-просветительский центр «Архэ»",price:"Уточняйте у организатора",aud:"Взрослые",series:"Вторая лекция курса о сосудистых растениях",desc:"Одна из древнейших групп сосудистых растений: как выглядели плауновые раньше и что от них осталось сегодня.",src:EL(450797),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-11",time:"19:00",title:"Проклятие и благословение ИИ",who:"Дмитрий Самофалов",whoAbout:"Сколтех",field:"it",type:"lecture",city:"Москва",place:"Филиал Ельцин Центра в Москве",org:"Сколтех, цикл «ИИ в усадьбе»",price:"Уточняйте при регистрации",reg:"Регистрация на сайте Ельцин Центра",aud:"Взрослые",desc:"Лекция об искусственном интеллекте в медицине: чем он помогает врачам и где его применение рискованно.",src:"https://www.skoltech.ru/lecture-hub",srcName:"Лекторий Сколтеха"},
+ {d:"2026-11-11",time:"19:00",title:"Этот странный биотех",who:"Никита Виноградов",field:"bio",type:"lecture",city:"Москва",place:"Парк «Зарядье», лекторий «Естественно!»",org:"Парк «Зарядье»",price:"Уточняйте у организатора",aud:"Взрослые",desc:"Неочевидные биотехнологии: что учёные уже умеют делать с живыми системами.",src:EL(450774),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-11",time:"19:00",title:"Гнездо под снегом",who:"Павел Квартальнов",whoAbout:"орнитолог",field:"bio",type:"course",city:"Москва",place:"Лекторий «Архэ»",org:"Культурно-просветительский центр «Архэ»",price:"Уточняйте у организатора",aud:"Взрослые",series:"Четвёртая лекция курса о птицах",desc:"Как птицы выводят птенцов в холоде и какие приспособления помогают им гнездиться в снегу.",src:EL(450798),srcName:"Анонс на «Элементах»"},
+ {d:"2026-11-11",time:"19:30",title:"Как мы будем исследовать космос?",field:"space",type:"cafe",city:"Москва",...POLY_CAFE,desc:"Разговор о ближайшем будущем космических исследований: какие миссии планируются и зачем."},
+ {d:"2026-11-12",time:"19:30",title:"What?! Научный квиз Сколтеха",field:"it",type:"quiz",city:"Москва",place:"Сколтех",org:"Сколтех",price:"Уточняйте у организатора",reg:"Запись команд по ссылке «Принять участие» на странице лектория",aud:"Команды взрослых",desc:"Командная игра с вопросами о науке и технологиях.",src:"https://www.skoltech.ru/lecture-hub",srcName:"Лекторий Сколтеха"},
+ {d:"2026-11-16",time:"19:00",title:"Физика: электрогенерация и источники энергии",field:"phys",type:"school",city:"Москва",...POLY_SCHOOL,desc:"Как получают электричество: от генератора до электростанций разных типов."},
+ {d:"2026-11-18",time:"время уточняется",title:"Персонализированная диагностика и лечение рака предстательной железы",who:"Борис Алексеев",whoAbout:"член-корреспондент РАН",field:"med",type:"lecture",city:"Калининград",place:"Балтийский федеральный университет им. И. Канта",...SBER_C,desc:"Как диагностика и лечение рака подстраиваются под конкретного пациента. Лекция из направления «Науки о жизни»."},
+ {d:"2026-11-23",time:"19:00",title:"Астрономия: спутники",field:"space",type:"school",city:"Москва",...POLY_SCHOOL,desc:"Как спутники держатся на орбите и чем они заняты: связь, навигация, наблюдение Земли."},
+ {d:"2026-11-24",time:"время уточняется",title:"ИИ для генной терапии: расшифровка регуляторной грамматики генома человека",who:"Дмитрий Пензар",field:"bio",type:"lecture",city:"Казань",place:"Казанский федеральный университет",...SBER_C,desc:"Как нейросети помогают понять, какие участки ДНК управляют работой генов, и зачем это нужно для генной терапии."},
+ {d:"2026-11-25",time:"время уточняется",title:"Минералы и информация: от новых минералов до поисков внеземной жизни",who:"Сергей Кривовичев",whoAbout:"академик РАН",field:"earth",type:"lecture",city:"Новосибирск",place:"Новосибирский государственный университет",...SBER_C,desc:"Как в структуре минералов «записана» информация и как это помогает открывать новые минералы и искать признаки жизни на других планетах."},
+ {d:"2026-11-25",time:"время уточняется",title:"Как ИИ меняет подходы к научным исследованиям",who:"Дмитрий Пензар, Михаил Медведев",field:"it",type:"talk",city:"Иннополис",place:"Университет Иннополис",...SBER_C,desc:"Дискуссия лауреатов премии о том, как искусственный интеллект встраивается в работу учёных."},
+ {d:"2026-11-25",time:"время уточняется",title:"Персонализированная диагностика и лечение рака предстательной железы",who:"Борис Алексеев",whoAbout:"член-корреспондент РАН",field:"med",type:"lecture",city:"Уфа",place:"Башкирский государственный медицинский университет",...SBER_C,desc:"Как диагностика и лечение рака подстраиваются под конкретного пациента."},
+ {d:"2026-11-25",time:"19:30",title:"Из чего состоит современное водное судно?",field:"phys",type:"cafe",city:"Москва",...POLY_CAFE,desc:"Инженерный разговор о том, как устроены современные суда."},
+ {d:"2026-11-27",time:"время уточняется",title:"Минералы и информация: от новых минералов до поисков внеземной жизни",who:"Сергей Кривовичев",whoAbout:"академик РАН",field:"earth",type:"lecture",city:"Ярославль",place:"Ярославский государственный университет им. П. Г. Демидова",...SBER_C,desc:"Как в структуре минералов «записана» информация и как это помогает искать признаки жизни за пределами Земли."},
+ {d:"2026-11-30",time:"19:00",title:"Химия: поверхностно-активные вещества",field:"chem",type:"school",city:"Москва",...POLY_SCHOOL,desc:"Почему мыло отмывает жир: как устроены ПАВ и где они используются."},
+ {d:"2026-12-09",time:"19:30",title:"Как устроена микроэлектроника нового поколения?",field:"phys",type:"cafe",city:"Москва",...POLY_CAFE,desc:"Разговор о том, как делают современные чипы и что придёт им на смену."}
+].map((e,i)=>({...e,id:"e"+i,kind:"event"}));
+
+const L=[
+ {d:"2027-02-08",dEnd:"2027-02-10",deadline:"2026-11-13",title:"Зимняя школа Плавучего университета",field:"ocean",type:"winter",city:"12 городов",place:"Москва, Санкт-Петербург, Калининград, Мурманск, Севастополь, Ростов-на-Дону, Сириус, Архангельск, Томск, Владивосток и другие",org:"Плавучий университет",price:"Взнос на странице не указан",aud:"Студенты, аспиранты, молодые учёные; для школьников есть вводные треки 6, 7, 11 и 13 февраля",reg:"Заявки с 26 октября по 13 ноября 2026. Нужно выбрать три трека и написать мотивационное письмо к каждому. Результаты 22–25 декабря",desc:"52 трека по три дня: физика океана и атмосферы, химия океана, морская биология, геология, анализ данных. Очное участие даёт право на отбор в экспедиции Плавучего университета.",src:"https://pu-ocean.ru/2027/winterschool",srcName:"Страница школы"},
+ {d:"2026-12-04",dEnd:"2026-12-06",title:"Молекулярная физиология",field:"bio",type:"module",city:"Сириус",place:"Университет «Сириус», федеральная территория Сириус",org:"Университет «Сириус»",price:"Бесплатно для прошедших отбор",aud:"Студенты бакалавриата, магистратуры и аспирантуры российских вузов",reg:"Приём заявок открыт, отбор конкурсный. Условия уточняйте в описании программы",desc:"Короткий образовательный модуль направления «Генетика и науки о жизни».",src:"https://siriusuniversity.ru/admission/educational-modules-and-activities/",srcName:"Программы университета «Сириус»"},
+ {d:"2026-11-30",dEnd:"2026-12-06",title:"Основы проточной цитометрии",field:"bio",type:"module",city:"Сириус",place:"Университет «Сириус», лабораторный комплекс",org:"Университет «Сириус»",price:"Бесплатно для прошедших отбор",aud:"Студенты бакалавриата, магистратуры и аспирантуры российских вузов",reg:"Приём заявок открыт, отбор конкурсный",desc:"Практический модуль по одному из основных методов клеточной биологии: подсчёту и анализу клеток в потоке.",src:"https://siriusuniversity.ru/admission/educational-modules-and-activities/",srcName:"Программы университета «Сириус»"},
+ {d:"2026-12-07",dEnd:"2026-12-11",title:"Сквозное проектирование и инженерный анализ",field:"it",type:"module",city:"Сириус",place:"Университет «Сириус»",org:"Университет «Сириус»",price:"Бесплатно для прошедших отбор",aud:"Студенты бакалавриата, магистратуры и аспирантуры российских вузов",reg:"Приём заявок открыт, отбор конкурсный",desc:"Модуль направления «Информационные технологии и ИИ» об инженерном проектировании и расчётах.",src:"https://siriusuniversity.ru/admission/educational-modules-and-activities/",srcName:"Программы университета «Сириус»"}
+].map((e,i)=>({...e,id:"l"+i,kind:"learn"}));
+
+let ALL=[...E,...L];
+const TODAY=(()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")})();
+const current=e=>(e.dEnd||e.d)>=TODAY||(e.deadline&&e.deadline>=TODAY);
+const state={tab:"events",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
+try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
+try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
+const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state.saved]))}catch(e){}};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const dt=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const fmt=s=>{const x=dt(s);return x.getDate()+" "+MON[x.getMonth()]};
+const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20))?b:c};
+
+function opts(sel,label,map){sel.innerHTML=`<option value="">${label}</option>`+Object.entries(map).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
+function refreshCities(){
+  const pool=ALL.filter(e=>state.tab==="learn"?e.kind==="learn":e.kind==="event");
+  const cs=[...new Set(pool.map(e=>e.city))].sort((a,b)=>a.localeCompare(b,"ru"));
+  const m={};cs.forEach(c=>m[c]=c);opts($("#fCity"),"Все",m);
+  if(!cs.includes(state.city))state.city="";$("#fCity").value=state.city;
+}
+opts($("#fField"),"Все",FIELDS);opts($("#fType"),"Все",TYPES);
+opts($("#sField"),"Выберите",FIELDS);opts($("#sType"),"Выберите",TYPES);
+refreshCities();
+
+const iso=x=>x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
+function inWhen(e){
+  const t=dt(TODAY),start=e.d,end=e.dEnd||e.d;
+  const span=(a,b)=>start<=iso(b)&&end>=iso(a);
+  if(state.when==="week"){const b=new Date(t);b.setDate(b.getDate()+6);return span(t,b)}
+  if(state.when==="weekend"){const sat=new Date(t);const off=(6-t.getDay()+7)%7;sat.setDate(t.getDate()+(t.getDay()===0?-1:off));const sun=new Date(sat);sun.setDate(sat.getDate()+1);return span(sat,sun)}
+  if(state.when==="month"){const a=new Date(t.getFullYear(),t.getMonth(),1),b=new Date(t.getFullYear(),t.getMonth()+1,0);return span(a,b)}
+  return true;
+}
+const AGO=(()=>{const n=new Date();n.setDate(n.getDate()-30);return iso(n)})();
+const recent=e=>(e.dEnd||e.d)>=AGO;
+function pass(e){
+  if(state.tab==="past"){if(current(e)||!recent(e)||e.kind!=="event")return false}
+  else if(state.tab==="saved"){if(!recent(e))return false}
+  else if(!current(e))return false;
+  if(state.tab==="events"&&e.kind!=="event")return false;
+  if(state.tab==="learn"&&e.kind!=="learn")return false;
+  if(state.tab==="saved"&&!state.saved.has(e.id))return false;
+  if(state.when&&!inWhen(e))return false;
+  if(state.city&&e.city!==state.city)return false;
+  if(state.field&&e.field!==state.field)return false;
+  if(state.type&&e.type!==state.type)return false;
+  if(state.mode==="online"&&!e.online)return false;
+  if(state.mode==="offline"&&e.city==="Онлайн")return false;
+  if(state.q){const h=[e.title,e.who,e.city,e.place,e.org,e.desc,FIELDS[e.field]||"",TYPES[e.type]||""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
+  return true;
+}
+
+function detail(e){
+  const rows=[
+    ["Когда",e.kind==="learn"?`${fmt(e.d)} – ${fmt(e.dEnd)} ${dt(e.dEnd).getFullYear()}`:`${fmt(e.d)}, ${WD[dt(e.d).getDay()]}, ${esc(e.time)}`],
+    e.deadline&&["Заявки до",`${fmt(e.deadline)} ${dt(e.deadline).getFullYear()}`],
+    e.who&&["Лектор",esc(e.who)+(e.whoAbout?`, ${esc(e.whoAbout)}`:"")],
+    ["Площадка",esc(e.place)+(e.online?" · есть онлайн-трансляция":"")],
+    e.addr&&["Адрес",esc(e.addr)],
+    ["Организатор",esc(e.org)],
+    e.series&&["Цикл",esc(e.series)],
+    ["Для кого",esc(e.aud)],
+    ["Стоимость",esc(e.price)],
+    e.reg&&["Как попасть",esc(e.reg)]
+  ].filter(Boolean);
+  return `<div class="detail" id="d-${e.id}"><div>
+    <p>${esc(e.desc)}</p>
+    <dl class="facts">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+    ${attendBlock(e)}
+    <div class="acts">${e.src?`<a class="pill" data-src="${e.id}" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="lbl">${esc(e.srcName||"Страница события")}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}
+      <button class="link" data-save="${e.id}">${state.saved.has(e.id)?"Убрать из сохранённого":"Сохранить"}</button></div>
+  </div></div>`;
+}
+
+function attendBlock(e){
+  if(e.kind!=="event"||e.d>TODAY)return "";
+  const mine=state.att.has(e.id),n=e.attended||0;
+  return `<div class="attend"><button class="att${mine?" on":""}" data-attend="${e.id}" ${mine?"disabled":""}><span class="att-dot" aria-hidden="true"></span>${mine?"Вы отметили, что были здесь":"Я был(а) здесь благодаря carpe science"}</button><span class="att-n">${n?`${n} ${plural(n,"человек отметил","человека отметили","человек отметили")}`:"Будьте первым, кто отметит"}</span></div>`;
+}
+function item(e){
+  const open=state.open===e.id;
+  const right=e.kind==="learn"
+    ?(e.deadline?`<span class="dl">заявки до ${fmt(e.deadline)}</span>`:`<span>приём открыт</span>`)
+    :`<span>${e.online?"очно и онлайн":"очно"}</span>`;
+  return `<div class="ev"><button class="row" data-id="${e.id}" aria-expanded="${open}" aria-controls="d-${e.id}">
+    <span class="time">${e.kind==="learn"?"":esc((e.time||"—").replace("время уточняется","—"))}</span>
+    <span class="main"><span class="kind">${TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
+      <span class="ttl">${esc(e.title)}</span>
+      ${e.who?`<span class="who">${esc(e.who)}</span>`:""}
+      <span class="where">${esc(e.city)} · ${esc(e.place)}</span></span>
+    <span class="right"><span class="plus" aria-hidden="true">+</span>${right}${state.saved.has(e.id)?'<span class="mark">сохранено</span>':""}</span>
+  </button>${open?detail(e):""}</div>`;
+}
+
+function render(){
+  const list=ALL.filter(pass).sort((a,b)=>a.d.localeCompare(b.d)||(a.time||"").localeCompare(b.time||""));if(state.tab==="past")list.reverse();
+  $("#n-events").textContent=ALL.filter(e=>e.kind==="event"&&current(e)).length;$("#n-learn").textContent=ALL.filter(e=>e.kind==="learn"&&current(e)).length;$("#n-saved").textContent=state.saved.size||"";
+  const cur=ALL.filter(current),ev=cur.filter(e=>e.kind==="event");
+  const nc=new Set(ev.map(e=>e.city)).size,np=cur.length-ev.length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
+  $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${plural(ev.length,"событие","события","событий")} в расписании</span></div><div class="stat"><b>${nc}</b><span>${plural(nc,"город","города","городов")} в афише</span></div><div class="stat"><b>${np}</b><span>${plural(np,"программа","программы","программ")} с открытым набором</span></div><div class="stat"><b>${ns}</b><span>${plural(ns,"источник","источника","источников")} анонсов</span></div>`;
+  const active=state.q||state.city||state.field||state.type||state.mode||state.when;
+  $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
+  if(active)$("#reset").onclick=reset;
+  if(!list.length){$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?"Здесь появятся события, которые вы сохраните.":state.tab==="past"?"Здесь появятся события последних 30 дней. На них можно отметить, что вы сходили.":"По этим условиям ничего нет. Попробуйте убрать часть фильтров."}</div>`;return}
+  let html="",lastM="";
+  const byDay={};list.forEach(e=>{(byDay[e.d]=byDay[e.d]||[]).push(e)});
+  Object.keys(byDay).sort().forEach(d=>{
+    const x=dt(d),mk=d.slice(0,7);
+    if(mk!==lastM){html+=`<div class="month"><span>${MONN[x.getMonth()]}</span><small>${x.getFullYear()}</small></div>`;lastM=mk}
+    html+=`<section class="day"><div class="dlabel"><b>${x.getDate()}</b><span>${MON[x.getMonth()]}<em>${WD[x.getDay()]}</em></span></div><div class="items">${byDay[d].map(item).join("")}</div></section>`;
+  });
+  $("#list").innerHTML=html;
+}
+function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fMode"].forEach(s=>$(s).value="");render()}
+
+$("#list").addEventListener("click",ev=>{
+  const a=ev.target.closest("[data-attend]");
+  if(a){const id=a.dataset.attend;a.disabled=true;
+    post("/api/attend",{id}).then(r=>r.json().then(j=>({ok:r.ok,j}))).then(({ok,j})=>{
+      if(!ok)throw new Error(j.error||"Не получилось");
+      state.att.add(id);try{localStorage.setItem("cs-att",JSON.stringify([...state.att]))}catch(x){}
+      const e=ALL.find(x=>x.id===id);if(e)e.attended=j.attended;render();
+    }).catch(err=>{a.disabled=false;const n=a.parentElement.querySelector(".att-n");if(n)n.textContent=err.message==="Failed to fetch"?"Нет связи с сервером, попробуйте позже":err.message});
+    return}
+  const src=ev.target.closest("[data-src]");if(src){post("/api/click",{id:src.dataset.src}).catch(()=>{});return}
+  const s=ev.target.closest("[data-save]");
+  if(s){const id=s.dataset.save;state.saved.has(id)?state.saved.delete(id):state.saved.add(id);persist();render();return}
+  const r=ev.target.closest(".row");if(!r)return;
+  state.open=state.open===r.dataset.id?null:r.dataset.id;render();
+  const again=document.querySelector(`.row[data-id="${r.dataset.id}"]`);again&&again.focus({preventScroll:true});
+});
+$("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();render()});
+$("#fCity").onchange=e=>{state.city=e.target.value;render()};
+$("#fField").onchange=e=>{state.field=e.target.value;render()};
+$("#fType").onchange=e=>{state.type=e.target.value;render()};
+$("#fMode").onchange=e=>{state.mode=e.target.value;render()};
+document.querySelectorAll(".when button").forEach(b=>b.onclick=()=>{state.when=b.dataset.when;document.querySelectorAll(".when button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()});
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
+  if(b.dataset.tab==="add"){$("#add").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});return}
+  state.tab=b.dataset.tab;state.open=null;
+  document.querySelectorAll(".nav button").forEach(x=>x.setAttribute("aria-current",x===b));
+  refreshCities();render();
+});
+$("#addForm").onsubmit=async e=>{
+  e.preventDefault();const f=e.target,btn=f.querySelector("button[type=submit]");
+  const v=id=>($(id)?.value||"").trim();
+  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),url:v("#sUrl"),desc:v("#sDesc"),email:v("#sEmail"),website:v("#sWebsite")};
+  $("#ok").hidden=true;$("#err").hidden=true;btn.disabled=true;
+  try{
+    const r=await post("/api/submit",body);const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.error||"Не получилось отправить. Попробуйте ещё раз.");
+    $("#ok").hidden=false;f.querySelectorAll("input,textarea").forEach(i=>i.value="");f.querySelectorAll("select").forEach(i=>i.selectedIndex=0);
+  }catch(err){$("#err").textContent=err.message==="Failed to fetch"?"Нет связи с сервером. Попробуйте позже.":err.message;$("#err").hidden=false}
+  btn.disabled=false;
+};
+
+state.open=E[0].id;render();
+
+/* данные с сервера сайта; если сервер недоступен, остаются встроенные события */
+function post(u,b){return fetch(u,{method:"POST",keepalive:true,headers:{"Content-Type":"application/json","X-Carpe":"1"},body:JSON.stringify(b)})}
+fetch("/api/events",{headers:{"Accept":"application/json"}}).then(r=>r.ok?r.json():null).then(j=>{
+  if(!j||!Array.isArray(j.events)||!j.events.length)return;
+  ALL=j.events.filter(e=>e.d&&e.title&&e.kind);
+  if(state.open&&!ALL.some(e=>e.id===state.open))state.open=null;
+  if(j.updated){const x=dt(j.updated.slice(0,10));$("#updated").textContent="Обновлено "+x.getDate()+" "+MON[x.getMonth()]}
+  refreshCities();render();
+}).catch(()=>{});
+post("/api/hit",{path:location.pathname,ref:document.referrer}).catch(()=>{});
+
+
+/* знак во всю ширину и кружок над «i» */
+function fitMarks(){
+  document.querySelectorAll("[data-fit]").forEach(el=>{
+    el.style.fontSize="100px";
+    const cs=getComputedStyle(el.parentElement),w=el.parentElement.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight),n=el.getBoundingClientRect().width;
+    if(n)el.style.fontSize=Math.floor(100*w/n*(parseFloat(el.dataset.fit)||0.995))+"px";
+    const stem=el.querySelector(".ii");
+    if(stem){const sv=stem.querySelector(".iota"),r=sv.getBoundingClientRect(),mr=parseFloat(getComputedStyle(sv).marginRight)||0;el.querySelector(".ii b").style.setProperty("--half",(r.width*(1-10/46)+mr)+"px")}
+  });
+}
+fitMarks();
+(document.fonts&&document.fonts.ready||Promise.resolve()).then(fitMarks);
+let fitT;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fitMarks,100)});
+</script>
+
+</body>
+</html>
