@@ -257,7 +257,8 @@ footer{padding-block:120px 0;overflow:hidden}
     <div class="section-head">
       <h2 class="sh"><span>ближайшие</span><span>события</span></h2>
       <div class="tabs nav" role="group" aria-label="Раздел">
-        <button id="t-events" data-tab="events" aria-current="true">Мероприятия<span id="n-events"></span></button>
+        <button id="t-offline" data-tab="offline" aria-current="true">Очно<span id="n-offline"></span></button>
+        <button id="t-online" data-tab="online" aria-current="false">Онлайн<span id="n-online"></span></button>
         <button id="t-learn" data-tab="learn" aria-current="false">Школы и программы<span id="n-learn"></span></button>
         <button id="t-saved" data-tab="saved" aria-current="false">Сохранённое<span id="n-saved"></span></button>
         <button id="t-past" data-tab="past" aria-current="false">Прошедшие</button>
@@ -268,7 +269,6 @@ footer{padding-block:120px 0;overflow:hidden}
       <label>Город<select id="fCity"></select></label>
       <label>Область<select id="fField"></select></label>
       <label>Формат<select id="fType"></select></label>
-      <label>Участие<select id="fMode"><option value="">Любое</option><option value="offline">Очно</option><option value="online">Есть онлайн</option></select></label>
     </div>
     <div class="under">
       <div class="when" role="group" aria-label="Период">
@@ -319,6 +319,7 @@ footer{padding-block:120px 0;overflow:hidden}
           <label>Формат<select id="sType"></select></label>
         </div>
         <label>Ссылка на официальный анонс или регистрацию<input id="sUrl" type="url" placeholder="https://" required></label>
+        <label>Ссылка на онлайн-трансляцию, если есть<input id="sJoin" type="url" placeholder="https://"></label>
         <label>О чём событие<textarea id="sDesc"></textarea></label>
         <div><button class="pill" type="submit"><span class="lbl">Отправить на проверку</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></button></div>
         <p class="ok" id="ok" hidden>Спасибо! Анонс отправлен на проверку и появится в расписании после одобрения.</p>
@@ -395,7 +396,7 @@ const L=[
 let ALL=[...E,...L];
 const TODAY=(()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")})();
 const current=e=>(e.dEnd||e.d)>=TODAY||(e.deadline&&e.deadline>=TODAY);
-const state={tab:"events",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
+const state={tab:"offline",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
 try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
 try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
 const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state.saved]))}catch(e){}};
@@ -407,8 +408,11 @@ const fmt=s=>{const x=dt(s);return x.getDate()+" "+MON[x.getMonth()]};
 const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20))?b:c};
 
 function opts(sel,label,map){sel.innerHTML=`<option value="">${label}</option>`+Object.entries(map).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
+const isOnline=e=>!!e.online||e.city==="Онлайн";
+const isOffline=e=>e.city!=="Онлайн";
 function refreshCities(){
-  const pool=ALL.filter(e=>state.tab==="learn"?e.kind==="learn":e.kind==="event");
+  const cityLbl=$("#fCity").closest("label");if(cityLbl)cityLbl.hidden=state.tab==="online";
+  const pool=ALL.filter(e=>state.tab==="learn"?e.kind==="learn":e.kind==="event"&&isOffline(e));
   const cs=[...new Set(pool.map(e=>e.city))].sort((a,b)=>a.localeCompare(b,"ru"));
   const m={};cs.forEach(c=>m[c]=c);opts($("#fCity"),"Все",m);
   if(!cs.includes(state.city))state.city="";$("#fCity").value=state.city;
@@ -433,15 +437,14 @@ function pass(e){
   if(state.tab==="past"){if(current(e)||!recent(e)||e.kind!=="event")return false}
   else if(state.tab==="saved"){if(!recent(e))return false}
   else if(!current(e))return false;
-  if(state.tab==="events"&&e.kind!=="event")return false;
+  if(state.tab==="offline"&&(e.kind!=="event"||!isOffline(e)))return false;
+  if(state.tab==="online"&&(e.kind!=="event"||!isOnline(e)))return false;
   if(state.tab==="learn"&&e.kind!=="learn")return false;
   if(state.tab==="saved"&&!state.saved.has(e.id))return false;
   if(state.when&&!inWhen(e))return false;
-  if(state.city&&e.city!==state.city)return false;
+  if(state.city&&state.tab!=="online"&&e.city!==state.city)return false;
   if(state.field&&e.field!==state.field)return false;
   if(state.type&&e.type!==state.type)return false;
-  if(state.mode==="online"&&!e.online)return false;
-  if(state.mode==="offline"&&e.city==="Онлайн")return false;
   if(state.q){const h=[e.title,e.who,e.city,e.place,e.org,e.desc,FIELDS[e.field]||"",TYPES[e.type]||""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
   return true;
 }
@@ -457,13 +460,14 @@ function detail(e){
     e.series&&["Цикл",esc(e.series)],
     ["Для кого",esc(e.aud)],
     ["Стоимость",esc(e.price)],
+    isOnline(e)&&["Онлайн",e.joinUrl?`<a href="${esc(e.joinUrl)}" target="_blank" rel="noopener">${esc(e.joinNote||"Ссылка на трансляцию")}</a>`:esc(e.joinNote||"Ссылку на трансляцию организатор даёт на странице события или после регистрации")],
     e.reg&&["Как попасть",esc(e.reg)]
   ].filter(Boolean);
   return `<div class="detail" id="d-${e.id}"><div>
     <p>${esc(e.desc)}</p>
     <dl class="facts">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
     ${attendBlock(e)}
-    <div class="acts">${e.src?`<a class="pill" data-src="${e.id}" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="lbl">${esc(e.srcName||"Страница события")}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}
+    <div class="acts">${isOnline(e)&&e.joinUrl?`<a class="pill" data-src="${e.id}" href="${esc(e.joinUrl)}" target="_blank" rel="noopener"><span class="lbl">Подключиться</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}${e.src?`<a class="pill${isOnline(e)&&e.joinUrl?" ghost":""}" data-src="${e.id}" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="lbl">${esc(e.srcName||"Страница события")}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}
       <button class="link" data-save="${e.id}">${state.saved.has(e.id)?"Убрать из сохранённого":"Сохранить"}</button></div>
   </div></div>`;
 }
@@ -478,25 +482,25 @@ function item(e){
   const open=state.open===e.id;
   const right=e.kind==="learn"
     ?(e.deadline?`<span class="dl">заявки до ${fmt(e.deadline)}</span>`:`<span>приём открыт</span>`)
-    :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">идёт до ${fmt(e.dEnd)}</span>`:""}<span>${e.online?"очно и онлайн":"очно"}</span>`;
+    :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">идёт до ${fmt(e.dEnd)}</span>`:""}<span>${e.city==="Онлайн"?"только онлайн":e.online?"очно и онлайн":"очно"}</span>`;
   return `<div class="ev"><button class="row" data-id="${e.id}" aria-expanded="${open}" aria-controls="d-${e.id}">
     <span class="time">${e.kind==="learn"?"":esc((e.time||"—").replace("время уточняется","—"))}</span>
     <span class="main"><span class="kind">${TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
       <span class="ttl">${esc(e.title)}</span>
       ${e.who?`<span class="who">${esc(e.who)}</span>`:""}
-      <span class="where">${esc(e.city)} · ${esc(e.place)}</span></span>
+      <span class="where">${e.city==="Онлайн"?`Онлайн · ${esc(e.org||e.place)}`:state.tab==="online"?`Трансляция · очно: ${esc(e.city)}, ${esc(e.place)}`:`${esc(e.city)} · ${esc(e.place)}`}</span></span>
     <span class="right"><span class="plus" aria-hidden="true">+</span>${right}${state.saved.has(e.id)?'<span class="mark">сохранено</span>':""}</span>
   </button>${open?detail(e):""}</div>`;
 }
 
 function render(){
   const list=ALL.filter(pass).sort((a,b)=>a.d.localeCompare(b.d)||(a.time||"").localeCompare(b.time||""));if(state.tab==="past")list.reverse();
-  $("#n-events").textContent=ALL.filter(e=>e.kind==="event"&&current(e)).length;$("#n-learn").textContent=ALL.filter(e=>e.kind==="learn"&&current(e)).length;$("#n-saved").textContent=state.saved.size||"";
-  const cur=ALL.filter(current),ev=cur.filter(e=>e.kind==="event");
-  const nc=new Set(ev.map(e=>e.city)).size,np=cur.length-ev.length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
-  $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${plural(ev.length,"событие","события","событий")} в расписании</span></div><div class="stat"><b>${nc}</b><span>${plural(nc,"город","города","городов")} в афише</span></div><div class="stat"><b>${np}</b><span>${plural(np,"программа","программы","программ")} с открытым набором</span></div><div class="stat"><b>${ns}</b><span>${plural(ns,"источник","источника","источников")} анонсов</span></div>`;
-  const active=state.q||state.city||state.field||state.type||state.mode||state.when;
-  $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
+  $("#n-offline").textContent=ALL.filter(e=>e.kind==="event"&&isOffline(e)&&current(e)).length;$("#n-online").textContent=ALL.filter(e=>e.kind==="event"&&isOnline(e)&&current(e)).length;$("#n-learn").textContent=ALL.filter(e=>e.kind==="learn"&&current(e)).length;$("#n-saved").textContent=state.saved.size||"";
+  const cur=ALL.filter(current),ev=cur.filter(e=>e.kind==="event"),nOnline=ev.filter(isOnline).length;
+  const nc=new Set(ev.filter(isOffline).map(e=>e.city)).size,np=cur.length-ev.length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
+  $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${plural(ev.length,"событие","события","событий")} в расписании</span></div><div class="stat"><b>${nc}</b><span>${plural(nc,"город","города","городов")} в афише</span></div><div class="stat"><b>${nOnline}</b><span>${plural(nOnline,"событие","события","событий")} онлайн — из любого города</span></div><div class="stat"><b>${np}</b><span>${plural(np,"программа","программы","программ")} с открытым набором</span></div>`;
+  const active=state.q||state.city||state.field||state.type||state.when;
+  $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${state.tab==="online"?" · время московское":""}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
   if(active)$("#reset").onclick=reset;
   if(!list.length){$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?"Здесь появятся события, которые вы сохраните.":state.tab==="past"?"Здесь появятся события последних 30 дней. На них можно отметить, что вы сходили.":"По этим условиям ничего нет. Попробуйте убрать часть фильтров."}</div>`;return}
   let html="",lastM="";
@@ -508,7 +512,7 @@ function render(){
   });
   $("#list").innerHTML=html;
 }
-function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fMode"].forEach(s=>$(s).value="");render()}
+function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType"].forEach(s=>$(s).value="");render()}
 
 $("#list").addEventListener("click",ev=>{
   const a=ev.target.closest("[data-attend]");
@@ -530,7 +534,6 @@ $("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase()
 $("#fCity").onchange=e=>{state.city=e.target.value;render()};
 $("#fField").onchange=e=>{state.field=e.target.value;render()};
 $("#fType").onchange=e=>{state.type=e.target.value;render()};
-$("#fMode").onchange=e=>{state.mode=e.target.value;render()};
 document.querySelectorAll(".when button").forEach(b=>b.onclick=()=>{state.when=b.dataset.when;document.querySelectorAll(".when button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()});
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
   if(b.dataset.tab==="add"){$("#add").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});return}
@@ -541,7 +544,7 @@ document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
 $("#addForm").onsubmit=async e=>{
   e.preventDefault();const f=e.target,btn=f.querySelector("button[type=submit]");
   const v=id=>($(id)?.value||"").trim();
-  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),url:v("#sUrl"),desc:v("#sDesc"),website:v("#sWebsite")};
+  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),url:v("#sUrl"),join:v("#sJoin"),desc:v("#sDesc"),website:v("#sWebsite")};
   $("#ok").hidden=true;$("#err").hidden=true;btn.disabled=true;
   try{
     const r=await post("/api/submit",body);const j=await r.json().catch(()=>({}));

@@ -163,6 +163,10 @@ def clean_submission(p):
         "src": url,
         "srcName": "Страница организатора",
     }
+    join = s("join", 500)
+    if re.match(r"^https?://[^\s/]+\.[^\s]+", join):
+        ev["joinUrl"] = join
+        ev["online"] = True
     if ev["kind"] == "learn":
         ev["dEnd"] = d
     return ev, "", []
@@ -417,7 +421,7 @@ class Handler(BaseHTTPRequestHandler):
                     ev = json.loads(row["data"])
                     edits = data.get("edits") or {}
                     if isinstance(edits, dict):
-                        for k in ("title", "who", "city", "place", "org", "time", "price", "aud", "desc", "src", "d", "field", "type"):
+                        for k in ("title", "who", "city", "place", "org", "time", "price", "aud", "desc", "src", "joinUrl", "d", "field", "type"):
                             if k in edits:
                                 ev[k] = str(edits[k])[:1200]
                         if ev.get("src"):
