@@ -285,6 +285,7 @@ footer{padding-block:120px 0;overflow:hidden}
       <label>Город<select id="fCity"></select></label>
       <label>Область<select id="fField"></select></label>
       <label>Формат<select id="fType"></select></label>
+      <label>Язык<select id="fLang"><option value="">Любой</option><option value="ru">На русском</option><option value="en">На английском</option></select></label>
     </div>
     <div class="under">
       <div class="when" role="group" aria-label="Период">
@@ -334,6 +335,7 @@ footer{padding-block:120px 0;overflow:hidden}
           <label>Область<select id="sField"></select></label>
           <label>Формат<select id="sType"></select></label>
         </div>
+        <label>Язык события<select id="sLang"><option value="ru">Русский</option><option value="en">Английский</option></select></label>
         <label>Ссылка на официальный анонс или регистрацию<input id="sUrl" type="url" placeholder="https://" required></label>
         <label>Ссылка на онлайн-трансляцию, если есть<input id="sJoin" type="url" placeholder="https://"></label>
         <label>О чём событие<textarea id="sDesc"></textarea></label>
@@ -416,7 +418,7 @@ const daysTo=s=>Math.round((dt(s)-dt(TODAY))/864e5);
 const leftTxt=n=>n===0?"последний день":n===1?"остался 1 день":`${plural(n,"остался","осталось","осталось")} ${n} ${plural(n,"день","дня","дней")}`;
 /* программа открыта для заявок: дедлайн не прошёл; без дедлайна — пока не началась */
 const openLearn=e=>e.kind==="learn"&&(e.deadline?e.deadline>=TODAY:e.d>=TODAY);
-const state={tab:"offline",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
+const state={tab:"offline",lang:"",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
 try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
 try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
 const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state.saved]))}catch(e){}};
@@ -428,6 +430,8 @@ const fmt=s=>{const x=dt(s);return x.getDate()+" "+MON[x.getMonth()]};
 const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20))?b:c};
 
 function opts(sel,label,map){sel.innerHTML=`<option value="">${label}</option>`+Object.entries(map).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
+const LANGS={ru:"на русском",en:"на английском"};
+const langOf=e=>e.lang==="en"?"en":"ru";
 const isOnline=e=>!!e.online||e.city==="Онлайн";
 const isOffline=e=>e.city!=="Онлайн";
 function refreshCities(){
@@ -465,7 +469,8 @@ function pass(e){
   if(state.city&&state.tab!=="online"&&e.city!==state.city)return false;
   if(state.field&&e.field!==state.field)return false;
   if(state.type&&e.type!==state.type)return false;
-  if(state.q){const h=[e.title,e.who,e.city,e.place,e.org,e.desc,FIELDS[e.field]||"",TYPES[e.type]||""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
+  if(state.lang&&langOf(e)!==state.lang)return false;
+  if(state.q){const h=[e.title,e.who,e.city,e.place,e.org,e.desc,e.lang==="en"?"английский english":"",FIELDS[e.field]||"",TYPES[e.type]||""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
   return true;
 }
 
@@ -479,6 +484,7 @@ function detail(e){
     ["Организатор",esc(e.org)],
     e.series&&["Цикл",esc(e.series)],
     ["Для кого",esc(e.aud)],
+    e.lang==="en"&&["Язык","английский"+(e.langNote?`, ${esc(e.langNote)}`:"")],
     ["Стоимость",esc(e.price)],
     isOnline(e)&&["Онлайн",e.joinUrl?`<a href="${esc(e.joinUrl)}" target="_blank" rel="noopener">${esc(e.joinNote||"Ссылка на трансляцию")}</a>`:esc(e.joinNote||"Ссылку на трансляцию организатор даёт на странице события или после регистрации")],
     e.reg&&["Как попасть",esc(e.reg)]
@@ -505,7 +511,7 @@ function item(e){
     :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">идёт до ${fmt(e.dEnd)}</span>`:""}<span>${e.city==="Онлайн"?"только онлайн":e.online?"очно и онлайн":"очно"}</span>`;
   return `<div class="ev"><button class="row" data-id="${e.id}" aria-expanded="${open}" aria-controls="d-${e.id}">
     <span class="time">${e.kind==="learn"?"":esc((e.time||"—").replace("время уточняется","—"))}</span>
-    <span class="main"><span class="kind">${e.kind==="learn"&&e.type==="school"?"Образовательная программа":TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
+    <span class="main"><span class="kind">${e.kind==="learn"&&e.type==="school"?"Образовательная программа":TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.lang==="en"?' · <span class="new">на английском</span>':""}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
       <span class="ttl">${esc(e.title)}</span>
       ${e.who?`<span class="who">${esc(e.who)}</span>`:""}
       <span class="where">${e.city==="Онлайн"?`Онлайн · ${esc(e.org||e.place)}`:state.tab==="online"?`Трансляция · очно: ${esc(e.city)}, ${esc(e.place)}`:`${esc(e.city)} · ${esc(e.place)}`}</span></span>
@@ -525,7 +531,7 @@ function render(){
     sb.hidden=false;
     sb.innerHTML=`<div class="soon-head"><h2>Успейте подать заявку</h2><button data-go-learn>Все школы и программы</button></div><ul class="soon-list">${soon.map(e=>{const n=daysTo(e.deadline);return `<li><button data-open-learn="${e.id}"><span class="s-dl">до ${fmt(e.deadline)}</span><span class="s-ttl">${esc(e.title)}<small>${esc(e.city)} · начало ${fmt(e.d)}</small></span><span class="left${n<=7?" urgent":""}">${leftTxt(n)}</span></button></li>`}).join("")}</ul>`;
   }else sb.hidden=true;
-  const active=state.q||state.city||state.field||state.type||state.when;
+  const active=state.q||state.city||state.field||state.type||state.lang||state.when;
   $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${state.tab==="online"?" · время московское":""}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
   if(active)$("#reset").onclick=reset;
   if(!list.length){$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?"Здесь появятся события, которые вы сохраните.":state.tab==="past"?"Здесь появятся события последних 30 дней. На них можно отметить, что вы сходили.":"По этим условиям ничего нет. Попробуйте убрать часть фильтров."}</div>`;return}
@@ -549,7 +555,7 @@ function render(){
   });
   $("#list").innerHTML=html;
 }
-function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType"].forEach(s=>$(s).value="");render()}
+function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",lang:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fLang"].forEach(s=>$(s).value="");render()}
 
 $("#list").addEventListener("click",ev=>{
   const a=ev.target.closest("[data-attend]");
@@ -571,6 +577,7 @@ $("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase()
 $("#fCity").onchange=e=>{state.city=e.target.value;render()};
 $("#fField").onchange=e=>{state.field=e.target.value;render()};
 $("#fType").onchange=e=>{state.type=e.target.value;render()};
+$("#fLang").onchange=e=>{state.lang=e.target.value;render()};
 document.querySelectorAll(".when button").forEach(b=>b.onclick=()=>{state.when=b.dataset.when;document.querySelectorAll(".when button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()});
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
   if(b.dataset.tab==="add"){$("#add").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});return}
@@ -590,7 +597,7 @@ $("#soon").addEventListener("click",ev=>{
 $("#addForm").onsubmit=async e=>{
   e.preventDefault();const f=e.target,btn=f.querySelector("button[type=submit]");
   const v=id=>($(id)?.value||"").trim();
-  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),url:v("#sUrl"),join:v("#sJoin"),desc:v("#sDesc"),website:v("#sWebsite")};
+  const body={title:v("#sTitle"),who:v("#sWho"),org:v("#sOrg"),date:v("#sDate"),time:v("#sTime"),city:v("#sCity"),place:v("#sPlace"),field:v("#sField"),type:v("#sType"),lang:v("#sLang"),url:v("#sUrl"),join:v("#sJoin"),desc:v("#sDesc"),website:v("#sWebsite")};
   $("#ok").hidden=true;$("#err").hidden=true;btn.disabled=true;
   try{
     const r=await post("/api/submit",body);const j=await r.json().catch(()=>({}));
