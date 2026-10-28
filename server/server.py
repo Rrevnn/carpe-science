@@ -283,12 +283,15 @@ class Handler(BaseHTTPRequestHandler):
 
     # --- статика ---
     def static(self, path):
-        if path in ("/", ""):
-            path = "/index.html"
-        elif path in ("/admin", "/admin/"):
-            path = "/admin.html"
-        full = os.path.normpath(os.path.join(PUBLIC, path.lstrip("/")))
-        if not full.startswith(PUBLIC) or not os.path.isfile(full):
+        if path in ("/", "", "/index.html"):
+            full = os.path.join(REPO, "index.html")
+        else:
+            if path in ("/admin", "/admin/"):
+                path = "/admin.html"
+            full = os.path.normpath(os.path.join(PUBLIC, path.lstrip("/")))
+            if not full.startswith(PUBLIC + os.sep):
+                full = ""
+        if not full or not os.path.isfile(full):
             return self.send(404, "Страница не найдена", "text/plain; charset=utf-8")
         with open(full, "rb") as f:
             data = f.read()

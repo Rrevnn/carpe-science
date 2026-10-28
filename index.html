@@ -341,6 +341,7 @@ footer{padding-block:120px 0;overflow:hidden}
 
 <div class="haze foot-h" aria-hidden="true"><i></i><i></i></div>
 <script>
+var STATIC=false;
 const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат"};
 const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль"};
 const MON=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
@@ -467,6 +468,7 @@ function detail(e){
 }
 
 function attendBlock(e){
+  if(STATIC)return "";
   if(e.kind!=="event"||e.d>TODAY)return "";
   const mine=state.att.has(e.id),n=e.attended||0;
   return `<div class="attend"><button class="att${mine?" on":""}" data-attend="${e.id}" ${mine?"disabled":""}><span class="att-dot" aria-hidden="true"></span>${mine?"Вы отметили, что были здесь":"Я был(а) здесь благодаря carpe science"}</button><span class="att-n">${n?`${n} ${plural(n,"человек отметил","человека отметили","человек отметили")}`:"Будьте первым, кто отметит"}</span></div>`;
@@ -550,16 +552,30 @@ $("#addForm").onsubmit=async e=>{
 
 state.open=E[0].id;render();
 
-/* данные с сервера сайта; если сервер недоступен, остаются встроенные события */
+/* данные: с сервера сайта, а без сервера (GitHub Pages) — из файла data/events.json */
 function post(u,b){return fetch(u,{method:"POST",keepalive:true,headers:{"Content-Type":"application/json","X-Carpe":"1"},body:JSON.stringify(b)})}
-fetch("/api/events",{headers:{"Accept":"application/json"}}).then(r=>r.ok?r.json():null).then(j=>{
-  if(!j||!Array.isArray(j.events)||!j.events.length)return;
-  ALL=j.events.filter(e=>e.d&&e.title&&e.kind);
+function useEvents(list,updated){
+  list=(list||[]).filter(e=>e&&e.d&&e.title&&e.kind&&!e.hidden);
+  if(!list.length)return;
+  ALL=list;
   if(state.open&&!ALL.some(e=>e.id===state.open))state.open=null;
-  if(j.updated){const x=dt(j.updated.slice(0,10));$("#updated").textContent="Обновлено "+x.getDate()+" "+MON[x.getMonth()]}
+  if(updated){const x=dt(updated.slice(0,10));$("#updated").textContent="Обновлено "+x.getDate()+" "+MON[x.getMonth()]}
   refreshCities();render();
-}).catch(()=>{});
-post("/api/hit",{path:location.pathname,ref:document.referrer}).catch(()=>{});
+}
+function staticMode(){
+  STATIC=true;
+  const f=$("#addForm");if(f){f.hidden=true;const n=document.createElement("p");n.className="ok";n.textContent="Приём анонсов от организаторов откроется совсем скоро. А пока мы сами собираем события со всей страны каждый день.";f.after(n)}
+  render();
+  fetch("data/events.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(list=>{
+    if(!Array.isArray(list))return;
+    const last=list.map(e=>e.checkedAt||e.addedAt||"").sort().pop();
+    useEvents(list,last);
+  }).catch(()=>{});
+}
+fetch("/api/events",{headers:{"Accept":"application/json"}})
+  .then(r=>{if(!r.ok)throw 0;return r.json()})
+  .then(j=>{if(!j||!Array.isArray(j.events))throw 0;useEvents(j.events,j.updated);post("/api/hit",{path:location.pathname,ref:document.referrer}).catch(()=>{})})
+  .catch(staticMode);
 
 
 /* знак во всю ширину и кружок над «i» */
