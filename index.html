@@ -154,6 +154,21 @@ button,input,select,textarea{font:inherit;color:inherit}
 .att-n{font-size:13px;color:var(--soft)}
 .err{color:#ffb4a8;margin:0;font-size:14px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.soon{margin-top:40px;border:1px solid var(--line);border-radius:14px;padding:22px 24px;display:grid;gap:16px}
+.soon-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.soon-head h2{margin:0;font:300 26px/1.15 var(--serif);letter-spacing:-.01em}
+.soon-head button{background:none;border:0;padding:0;color:var(--ink);cursor:pointer;font-size:14px;text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.soon-list{list-style:none;margin:0;padding:0;display:grid}
+.soon-list li+li{border-top:1px solid var(--rule)}
+.soon-list button{display:grid;grid-template-columns:110px 1fr auto;gap:16px;align-items:baseline;width:100%;text-align:left;background:none;border:0;padding:12px 0;cursor:pointer;color:var(--ink)}
+.soon-list button:hover .s-ttl{text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
+.s-dl{font-size:13px;color:var(--soft);font-variant-numeric:tabular-nums}
+.s-ttl{font-size:16px;font-weight:500;min-width:0}
+.s-ttl small{display:block;font-weight:400;font-size:13px;color:var(--soft);margin-top:2px}
+.left{font-size:13px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--soft)}
+.left.urgent{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.month .mnote{font-size:13px;color:var(--faint);margin-left:auto}
+@media (max-width:520px){.soon{padding:18px}.soon-list button{grid-template-columns:1fr auto;gap:4px 12px}.s-dl{grid-column:1/-1}}
 .empty{padding-block:72px;color:var(--soft);font:300 22px var(--serif)}
 
 /* вопросы */
@@ -251,6 +266,7 @@ footer{padding-block:120px 0;overflow:hidden}
       </div>
     </div>
     <div class="stats" id="factsLine"></div>
+    <div class="soon" id="soon" hidden></div>
   </section>
 
   <section class="section" id="schedule">
@@ -396,6 +412,10 @@ const L=[
 let ALL=[...E,...L];
 const TODAY=(()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")})();
 const current=e=>(e.dEnd||e.d)>=TODAY||(e.deadline&&e.deadline>=TODAY);
+const daysTo=s=>Math.round((dt(s)-dt(TODAY))/864e5);
+const leftTxt=n=>n===0?"последний день":n===1?"остался 1 день":`${plural(n,"остался","осталось","осталось")} ${n} ${plural(n,"день","дня","дней")}`;
+/* программа открыта для заявок: дедлайн не прошёл; без дедлайна — пока не началась */
+const openLearn=e=>e.kind==="learn"&&(e.deadline?e.deadline>=TODAY:e.d>=TODAY);
 const state={tab:"offline",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
 try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
 try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
@@ -439,7 +459,7 @@ function pass(e){
   else if(!current(e))return false;
   if(state.tab==="offline"&&(e.kind!=="event"||!isOffline(e)))return false;
   if(state.tab==="online"&&(e.kind!=="event"||!isOnline(e)))return false;
-  if(state.tab==="learn"&&e.kind!=="learn")return false;
+  if(state.tab==="learn"&&!openLearn(e))return false;
   if(state.tab==="saved"&&!state.saved.has(e.id))return false;
   if(state.when&&!inWhen(e))return false;
   if(state.city&&state.tab!=="online"&&e.city!==state.city)return false;
@@ -481,11 +501,11 @@ function attendBlock(e){
 function item(e){
   const open=state.open===e.id;
   const right=e.kind==="learn"
-    ?(e.deadline?`<span class="dl">заявки до ${fmt(e.deadline)}</span>`:`<span>приём открыт</span>`)
+    ?(e.deadline?`<span class="left${daysTo(e.deadline)<=7?" urgent":""}">${leftTxt(daysTo(e.deadline))}</span><span>заявки до ${fmt(e.deadline)}</span>`:`<span>приём открыт, срок не указан</span>`)+`<span>начало ${fmt(e.d)}</span>`
     :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">идёт до ${fmt(e.dEnd)}</span>`:""}<span>${e.city==="Онлайн"?"только онлайн":e.online?"очно и онлайн":"очно"}</span>`;
   return `<div class="ev"><button class="row" data-id="${e.id}" aria-expanded="${open}" aria-controls="d-${e.id}">
     <span class="time">${e.kind==="learn"?"":esc((e.time||"—").replace("время уточняется","—"))}</span>
-    <span class="main"><span class="kind">${TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
+    <span class="main"><span class="kind">${e.kind==="learn"&&e.type==="school"?"Образовательная программа":TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
       <span class="ttl">${esc(e.title)}</span>
       ${e.who?`<span class="who">${esc(e.who)}</span>`:""}
       <span class="where">${e.city==="Онлайн"?`Онлайн · ${esc(e.org||e.place)}`:state.tab==="online"?`Трансляция · очно: ${esc(e.city)}, ${esc(e.place)}`:`${esc(e.city)} · ${esc(e.place)}`}</span></span>
@@ -495,15 +515,32 @@ function item(e){
 
 function render(){
   const list=ALL.filter(pass).sort((a,b)=>a.d.localeCompare(b.d)||(a.time||"").localeCompare(b.time||""));if(state.tab==="past")list.reverse();
-  $("#n-offline").textContent=ALL.filter(e=>e.kind==="event"&&isOffline(e)&&current(e)).length;$("#n-online").textContent=ALL.filter(e=>e.kind==="event"&&isOnline(e)&&current(e)).length;$("#n-learn").textContent=ALL.filter(e=>e.kind==="learn"&&current(e)).length;$("#n-saved").textContent=state.saved.size||"";
+  $("#n-offline").textContent=ALL.filter(e=>e.kind==="event"&&isOffline(e)&&current(e)).length;$("#n-online").textContent=ALL.filter(e=>e.kind==="event"&&isOnline(e)&&current(e)).length;$("#n-learn").textContent=ALL.filter(openLearn).length;$("#n-saved").textContent=state.saved.size||"";
   const cur=ALL.filter(current),ev=cur.filter(e=>e.kind==="event"),nOnline=ev.filter(isOnline).length;
-  const nc=new Set(ev.filter(isOffline).map(e=>e.city)).size,np=cur.length-ev.length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
+  const nc=new Set(ev.filter(isOffline).map(e=>e.city)).size,np=ALL.filter(openLearn).length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
   $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${plural(ev.length,"событие","события","событий")} в расписании</span></div><div class="stat"><b>${nc}</b><span>${plural(nc,"город","города","городов")} в афише</span></div><div class="stat"><b>${nOnline}</b><span>${plural(nOnline,"событие","события","событий")} онлайн — из любого города</span></div><div class="stat"><b>${np}</b><span>${plural(np,"программа","программы","программ")} с открытым набором</span></div>`;
+  const soon=ALL.filter(e=>openLearn(e)&&e.deadline&&daysTo(e.deadline)<=30).sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,5);
+  const sb=$("#soon");
+  if(soon.length){
+    sb.hidden=false;
+    sb.innerHTML=`<div class="soon-head"><h2>Успейте подать заявку</h2><button data-go-learn>Все школы и программы</button></div><ul class="soon-list">${soon.map(e=>{const n=daysTo(e.deadline);return `<li><button data-open-learn="${e.id}"><span class="s-dl">до ${fmt(e.deadline)}</span><span class="s-ttl">${esc(e.title)}<small>${esc(e.city)} · начало ${fmt(e.d)}</small></span><span class="left${n<=7?" urgent":""}">${leftTxt(n)}</span></button></li>`}).join("")}</ul>`;
+  }else sb.hidden=true;
   const active=state.q||state.city||state.field||state.type||state.when;
   $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${state.tab==="online"?" · время московское":""}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
   if(active)$("#reset").onclick=reset;
   if(!list.length){$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?"Здесь появятся события, которые вы сохраните.":state.tab==="past"?"Здесь появятся события последних 30 дней. На них можно отметить, что вы сходили.":"По этим условиям ничего нет. Попробуйте убрать часть фильтров."}</div>`;return}
   let html="",lastM="";
+  if(state.tab==="learn"){
+    const withDl=list.filter(e=>e.deadline).sort((a,b)=>a.deadline.localeCompare(b.deadline)),noDl=list.filter(e=>!e.deadline);
+    const byDl={};withDl.forEach(e=>{(byDl[e.deadline]=byDl[e.deadline]||[]).push(e)});
+    Object.keys(byDl).sort().forEach(d=>{
+      const x=dt(d),mk=d.slice(0,7);
+      if(mk!==lastM){html+=`<div class="month"><span>${MONN[x.getMonth()]}</span><small>${x.getFullYear()}</small><span class="mnote">приём заявок до</span></div>`;lastM=mk}
+      html+=`<section class="day"><div class="dlabel"><b>${x.getDate()}</b><span>${MON[x.getMonth()]}<em>${WD[x.getDay()]}</em></span></div><div class="items">${byDl[d].map(item).join("")}</div></section>`;
+    });
+    if(noDl.length)html+=`<div class="month"><span>Срок подачи не указан</span><small>уточняйте у организатора</small></div><section class="day"><div class="dlabel"><span>приём открыт</span></div><div class="items">${noDl.map(item).join("")}</div></section>`;
+    $("#list").innerHTML=html;return;
+  }
   const byDay={};list.forEach(e=>{(byDay[e.d]=byDay[e.d]||[]).push(e)});
   Object.keys(byDay).sort().forEach(d=>{
     const x=dt(d),mk=d.slice(0,7);
@@ -540,6 +577,15 @@ document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
   state.tab=b.dataset.tab;state.open=null;
   document.querySelectorAll(".nav button").forEach(x=>x.setAttribute("aria-current",x===b));
   refreshCities();render();
+});
+$("#soon").addEventListener("click",ev=>{
+  const o=ev.target.closest("[data-open-learn]"),g=ev.target.closest("[data-go-learn]");
+  if(!o&&!g)return;
+  state.tab="learn";state.open=o?o.dataset.openLearn:null;
+  document.querySelectorAll(".nav button").forEach(x=>x.setAttribute("aria-current",x.dataset.tab==="learn"));
+  refreshCities();render();
+  const target=o?document.querySelector(`.row[data-id="${o.dataset.openLearn}"]`):$("#schedule");
+  (target||$("#schedule")).scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth",block:"start"});
 });
 $("#addForm").onsubmit=async e=>{
   e.preventDefault();const f=e.target,btn=f.querySelector("button[type=submit]");
