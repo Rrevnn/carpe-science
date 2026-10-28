@@ -419,8 +419,9 @@ refreshCities();
 
 const iso=x=>x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
 function inWhen(e){
-  const t=dt(TODAY),start=e.d,end=e.dEnd||e.d;
-  const span=(a,b)=>start<=iso(b)&&end>=iso(a);
+  // фильтры по датам смотрят только на дату события (для многодневных — на дату начала)
+  const t=dt(TODAY),start=e.d;
+  const span=(a,b)=>start>=iso(a)&&start<=iso(b);
   if(state.when==="week"){const b=new Date(t);b.setDate(b.getDate()+6);return span(t,b)}
   if(state.when==="weekend"){const sat=new Date(t);const off=(6-t.getDay()+7)%7;sat.setDate(t.getDate()+(t.getDay()===0?-1:off));const sun=new Date(sat);sun.setDate(sat.getDate()+1);return span(sat,sun)}
   if(state.when==="month"){const a=new Date(t.getFullYear(),t.getMonth(),1),b=new Date(t.getFullYear(),t.getMonth()+1,0);return span(a,b)}
@@ -477,7 +478,7 @@ function item(e){
   const open=state.open===e.id;
   const right=e.kind==="learn"
     ?(e.deadline?`<span class="dl">заявки до ${fmt(e.deadline)}</span>`:`<span>приём открыт</span>`)
-    :`<span>${e.online?"очно и онлайн":"очно"}</span>`;
+    :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">идёт до ${fmt(e.dEnd)}</span>`:""}<span>${e.online?"очно и онлайн":"очно"}</span>`;
   return `<div class="ev"><button class="row" data-id="${e.id}" aria-expanded="${open}" aria-controls="d-${e.id}">
     <span class="time">${e.kind==="learn"?"":esc((e.time||"—").replace("время уточняется","—"))}</span>
     <span class="main"><span class="kind">${TYPES[e.type]||"Событие"} · ${FIELDS[e.field]||"Наука"}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
