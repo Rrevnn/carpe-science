@@ -134,7 +134,7 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
 const fd=s=>{if(!s)return"";const[y,m,d]=s.slice(0,10).split("-").map(Number);return d+" "+MON[m-1]};
 const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат"};
-const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль"};
+const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль",contest:"Соревнования",fest:"Фестиваль",tour:"Экскурсия"};
 let S=null,subFilter="pending";
 
 function post(u,b){return fetch(u,{method:"POST",headers:{"Content-Type":"application/json","X-Carpe":"1"},body:JSON.stringify(b||{})})}
