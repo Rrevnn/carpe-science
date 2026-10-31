@@ -133,7 +133,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const MON=["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
 const fd=s=>{if(!s)return"";const[y,m,d]=s.slice(0,10).split("-").map(Number);return d+" "+MON[m-1]};
-const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат",media:"Медиа, журналистика и кино",lit:"Литература"};
+const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат",media:"Медиа, журналистика и кино",lit:"Литература",ling:"Лингвистика и языки"};
 const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль",contest:"Соревнования",fest:"Фестиваль",tour:"Экскурсия"};
 let S=null,subFilter="pending";
 
