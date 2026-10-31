@@ -176,6 +176,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* вопросы */
 .faq-grid{display:grid;grid-template-columns:1fr 1.35fr;gap:40px}
+#about .sh{align-self:start;position:sticky;top:32px}
+.about{display:grid;gap:28px;max-width:62ch}
+.about p{margin:0;color:var(--soft)}
+.about h3{margin:0 0 8px;font:300 24px/1.2 var(--serif);color:var(--ink);letter-spacing:-.01em}
+.about ul{margin:0;padding-left:1.1em;display:grid;gap:6px;color:var(--soft)}
+.about a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--faint);text-underline-offset:3px}
 .faq{display:grid;border-top:1px solid var(--rule)}
 .faq details{border-bottom:1px solid var(--rule)}
 .faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font-size:16px}
@@ -250,6 +256,7 @@ footer{padding-block:120px 0;overflow:hidden}
     <nav class="menu" aria-label="Разделы сайта">
       <a href="#schedule">Расписание</a>
       <a href="#faq">Вопросы</a>
+      <a href="#about">О проекте</a>
       <a href="#add">Организаторам</a>
     </nav>
     <a class="pill" href="#add"><span class="lbl">Добавить событие</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
@@ -258,7 +265,7 @@ footer{padding-block:120px 0;overflow:hidden}
   <section class="hero">
     <div class="hero-top">
       <p>Научные лекции, фестивали и школы по всей России, а ещё лингвистика, литература, медиа и кино</p>
-      <p>Обновляется по понедельникам и четвергам</p>
+      <p>Обновляется каждый день</p>
     </div>
     <div class="wm" data-fit="0.9" aria-label="carpe science">carpe sc<span class="ii"><svg class="iota" viewBox="0 0 46 100" aria-hidden="true"><path d="M10 8 V50 C10 80 21 92 38 92" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg><b></b></span>ence</div>
     <div class="hero-body">
@@ -306,10 +313,29 @@ footer{padding-block:120px 0;overflow:hidden}
     <div class="faq-grid">
       <h2 class="sh"><span>вопросы?</span><span>отвечаем</span></h2>
       <div class="faq">
-        <details><summary>Откуда берутся события?<i aria-hidden="true">+</i></summary><p>Из афиш лекториев, музеев, университетов, научных центров и календаря «Элементов». Дважды в неделю мы проверяем источники и добавляем новые анонсы. У каждого события есть ссылка на страницу организатора.</p></details>
+        <details><summary>Откуда берутся события?<i aria-hidden="true">+</i></summary><p>Из открытых анонсов лекториев, музеев, университетов, библиотек и научных центров. Новые события мы ищем каждый день, а дважды в неделю перепроверяем уже опубликованные. У каждого события есть ссылка на страницу организатора. Подробнее — в разделе <a href="#about" style="color:var(--ink)">«О проекте»</a>.</p></details>
         <details><summary>Что значит пометка «новое, не проверено»?<i aria-hidden="true">+</i></summary><p>Событие нашлось автоматически, и его ещё не сверили вручную. Перед поездкой откройте страницу организатора: время и формат иногда меняются.</p></details>
         <details><summary>Это бесплатно?<i aria-hidden="true">+</i></summary><p>Пользоваться расписанием бесплатно. Многие лекции тоже бесплатные, но часто нужна регистрация. Стоимость и условия указаны в карточке события.</p></details>
         <details><summary>Как добавить своё мероприятие?<i aria-hidden="true">+</i></summary><p>Заполните форму ниже и укажите ссылку на официальный анонс. Мы сверим данные и опубликуем событие. Подходят открытые лекции, фестивали, экскурсии в лаборатории, научные кафе, школы и курсы.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="faq-grid">
+      <h2 class="sh"><span>о проекте</span><span>и источниках</span></h2>
+      <div class="about">
+        <p><b style="color:var(--ink);font-weight:500">Carpe science</b> — афиша научно-популярных событий по всей России: лекции, фестивали, школы, олимпиады и онлайн-трансляции, а ещё лингвистика, литература, медиа и кино. Мы собираем их в одном месте, чтобы у человека в любом городе был доступ к знаниям.</p>
+        <div><h3>Откуда события</h3><p>Мы находим события в открытых анонсах организаторов: на сайтах университетов, музеев, библиотек, планетариев, научных центров и фестивалей. Часть анонсов присылают сами организаторы и читатели. Поиск идёт автоматически, а каждое событие сверяется с первоисточником. Новые записи помечены «не проверено», пока их не сверили.</p></div>
+        <div><h3>Как мы используем информацию</h3><ul>
+          <li>Берём только факты: название, дату, место, лектора, стоимость и способ попасть на событие.</li>
+          <li>Описания пишем своими словами и не копируем тексты анонсов.</li>
+          <li>Не используем афиши, фотографии и другие изображения организаторов.</li>
+          <li>У каждого события есть ссылка на официальный анонс. Регистрация, билеты и трансляции всегда идут через организатора.</li>
+          <li>Не обходим ограничения сайтов: если сайт закрыт для автоматического просмотра, мы его не используем.</li>
+        </ul></div>
+        <div><h3>Всегда сверяйтесь с организатором</h3><p>Даты и условия могут меняться. Мы регулярно перепроверяем события, но перед походом откройте официальный анонс по ссылке в карточке.</p></div>
+        <div><h3>Организаторам</h3><p>Если вы нашли у нас ошибку, хотите, чтобы событие убрали, или хотите добавить своё — напишите нам: <a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a>. Исправим или уберём в течение нескольких дней. Лекторы тоже могут попросить убрать своё имя из карточки события.</p></div>
       </div>
     </div>
   </section>
@@ -353,7 +379,7 @@ footer{padding-block:120px 0;overflow:hidden}
   <footer>
     <div class="foot">
       <div class="ready"><div><span>готовы</span><span>к открытиям?</span></div><div><a class="pill ghost" href="#schedule"><span class="lbl">К расписанию</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 12V2M3 6l4-4 4 4"/></svg></span></a></div></div>
-      <div><h3>разделы</h3><ul><li><a href="#schedule">Расписание</a></li><li><a href="#faq">Вопросы</a></li><li><a href="#add">Добавить событие</a></li></ul></div>
+      <div><h3>разделы</h3><ul><li><a href="#schedule">Расписание</a></li><li><a href="#faq">Вопросы</a></li><li><a href="#about">О проекте</a></li><li><a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a></li><li><a href="#add">Добавить событие</a></li></ul></div>
       <div><h3>источники</h3><ul><li><a href="https://elementy.ru/events" target="_blank" rel="noopener">«Элементы»</a></li><li><a href="https://polymus.ru/pages/calendar" target="_blank" rel="noopener">Политехнический музей</a></li><li><a href="https://www.skoltech.ru/lecture-hub" target="_blank" rel="noopener">Сколтех</a></li><li><a href="https://pu-ocean.ru/2027/winterschool" target="_blank" rel="noopener">Плавучий университет</a></li><li><a href="https://siriusuniversity.ru/admission/educational-modules-and-activities/" target="_blank" rel="noopener">Университет «Сириус»</a></li></ul></div>
     </div>
     <div class="fine"><span>© 2026 carpe science</span><span>Время ловить науку и расширять горизонты</span></div>
