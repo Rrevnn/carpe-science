@@ -145,6 +145,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:14px;padding-top:2px}
 .link{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:9px 18px;cursor:pointer;font-size:14px;transition:border-color .2s}
 .link:hover{border-color:var(--ink)}
+.cal-box{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--soft)}
+.cal-box span{flex-basis:100%}
+.cal-box a.link{text-decoration:none;color:var(--ink)}
 .share-box{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--soft)}
 .share-box input{flex:1 1 260px;min-width:0;background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;color:var(--ink);font-size:13px}
 .row.flash{background:var(--tint);box-shadow:inset 0 0 0 1px var(--line)}
@@ -545,7 +548,9 @@ function detail(e){
     ${attendBlock(e)}
     <div class="acts">${isOnline(e)&&e.joinUrl?`<a class="pill" data-src="${e.id}" href="${esc(e.joinUrl)}" target="_blank" rel="noopener"><span class="lbl">Подключиться</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}${e.src?`<a class="pill${isOnline(e)&&e.joinUrl?" ghost":""}" data-src="${e.id}" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="lbl">${esc(e.srcName||"Страница события")}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}
       <button class="link" data-save="${e.id}">${state.saved.has(e.id)?"Убрать из сохранённого":"Сохранить"}</button>
+      <button class="link" data-cal="${e.id}">${e.kind==="learn"&&e.deadline?"Напомнить о дедлайне":"Напомнить"}</button>
       <button class="link" data-share="${e.id}">Поделиться</button></div>
+    <div class="cal-box" id="cb-${e.id}" hidden><span>${e.kind==="learn"&&e.deadline?`Добавьте дедлайн ${fmt(e.deadline)} в календарь — напоминание придёт за 3 дня и утром в последний день.`:"Добавьте событие в календарь — напоминание придёт за день и за 2 часа до начала."}</span><button class="link" data-ics="${e.id}">Скачать для iPhone, Android, Outlook, Яндекс</button><a class="link" data-gcal="${e.id}" href="#" target="_blank" rel="noopener">Google Календарь</a></div>
     <div class="share-box" id="sb-${e.id}" hidden><input type="text" readonly aria-label="Ссылка на событие"><span>Ссылка выделена, скопируйте её</span></div>
   </div></div>`;
 }
@@ -619,6 +624,11 @@ $("#list").addEventListener("click",ev=>{
     }).catch(err=>{a.disabled=false;const n=a.parentElement.querySelector(".att-n");if(n)n.textContent=err.message==="Failed to fetch"?"Нет связи с сервером, попробуйте позже":err.message});
     return}
   const src=ev.target.closest("[data-src]");if(src){post("/api/click",{id:src.dataset.src}).catch(()=>{});return}
+  const cb=ev.target.closest("[data-cal]");
+  if(cb){const b=document.getElementById("cb-"+cb.dataset.cal);if(b){b.hidden=!b.hidden;const g=b.querySelector("[data-gcal]");if(g)g.href=gcalUrl(ALL.find(x=>x.id===cb.dataset.cal))}return}
+  const ic=ev.target.closest("[data-ics]");
+  if(ic){downloadIcs(ALL.find(x=>x.id===ic.dataset.ics));return}
+  if(ev.target.closest("[data-gcal]"))return;
   const sh=ev.target.closest("[data-share]");
   if(sh){shareEvent(sh.dataset.share,sh);return}
   const s=ev.target.closest("[data-save]");
@@ -662,6 +672,40 @@ $("#addForm").onsubmit=async e=>{
 };
 
 state.open=E[0].id;render();
+
+/* напоминания через календарь: без регистрации и без сбора данных */
+function calInfo(e){
+  const dl=e.kind==="learn"&&e.deadline;
+  const day=(dl?e.deadline:e.d).replace(/-/g,"");
+  const m=!dl&&String(e.time||"").match(/(\d{1,2}):(\d{2})(?:\s*[–—-]\s*(\d{1,2}):(\d{2}))?/);
+  let start,end,allDay=!m;
+  if(m){
+    const pad=n=>String(n).padStart(2,"0");
+    const sh=+m[1],sm=+m[2];let eh=m[3]?+m[3]:sh+2,em=m[3]?+m[4]:sm;if(eh>23){eh=23;em=59}
+    start=day+"T"+pad(sh)+pad(sm)+"00";end=day+"T"+pad(eh)+pad(em)+"00";
+  }else{const x=dt(dl?e.deadline:(e.dEnd||e.d));x.setDate(x.getDate()+1);start=day;end=x.getFullYear()+String(x.getMonth()+1).padStart(2,"0")+String(x.getDate()).padStart(2,"0")}
+  const title=dl?"Последний день подачи заявки: "+e.title:e.title;
+  const where=isOffline(e)?[e.city,e.place,e.addr].filter(Boolean).join(", "):"Онлайн";
+  const desc=[e.desc,(isOnline(e)&&!isOffline(e)&&m)?"Время московское.":"",e.joinUrl?"Трансляция: "+e.joinUrl:"",e.src?"Анонс: "+e.src:"","Событие на carpe science: "+linkFor(e.id)].filter(Boolean).join("\n");
+  return {start,end,allDay,title,where,desc,dl};
+}
+function gcalUrl(e){
+  if(!e)return "#";const c=calInfo(e);
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(c.title)+"&dates="+c.start+"/"+c.end+"&details="+encodeURIComponent(c.desc)+"&location="+encodeURIComponent(c.where);
+}
+function downloadIcs(e){
+  if(!e)return;const c=calInfo(e);
+  const esc2=t=>String(t).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+  const now=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const dts=c.allDay?["DTSTART;VALUE=DATE:"+c.start,"DTEND;VALUE=DATE:"+c.end]:["DTSTART:"+c.start,"DTEND:"+c.end];
+  const alarms=c.dl?["-P3D","PT9H"]:(c.allDay?["-P1D"]:["-P1D","-PT2H"]);
+  const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//carpe science//RU","CALSCALE:GREGORIAN","BEGIN:VEVENT","UID:"+e.id+"@carpescience.ru","DTSTAMP:"+now,...dts,"SUMMARY:"+esc2(c.title),"LOCATION:"+esc2(c.where),"DESCRIPTION:"+esc2(c.desc),"URL:"+linkFor(e.id),
+    ...alarms.flatMap(t=>["BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+esc2(c.title),"TRIGGER:"+t,"END:VALARM"]),"END:VEVENT","END:VCALENDAR"];
+  const fold=l=>{let o="",n=0;for(const ch of l){const b=new TextEncoder().encode(ch).length;if(n+b>73){o+="\r\n ";n=1}o+=ch;n+=b}return o};
+  const blob=new Blob([lines.map(fold).join("\r\n")],{type:"text/calendar;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="carpe-science-"+e.id+".ics";document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
 
 /* ссылки на отдельные события: carpescience.ru/#event-<id> */
 const linkFor=id=>location.origin+location.pathname+"#event-"+id;
