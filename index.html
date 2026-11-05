@@ -309,6 +309,7 @@ footer{padding-block:120px 0;overflow:hidden}
       <label>Область<select id="fField"></select></label>
       <label>Формат<select id="fType"></select></label>
       <label>Язык<select id="fLang"><option value="">Любой</option><option value="ru">На русском</option><option value="en">На английском</option></select></label>
+      <label>Цена<select id="fPrice"><option value="">Любая</option><option value="free">Только бесплатные</option></select></label>
     </div>
     <div class="under">
       <div class="when" role="group" aria-label="Период">
@@ -477,7 +478,7 @@ const daysTo=s=>Math.round((dt(s)-dt(TODAY))/864e5);
 const leftTxt=n=>n===0?"последний день":n===1?"остался 1 день":`${plural(n,"остался","осталось","осталось")} ${n} ${plural(n,"день","дня","дней")}`;
 /* программа открыта для заявок: дедлайн не прошёл; без дедлайна — пока не началась */
 const openLearn=e=>e.kind==="learn"&&(e.deadline?e.deadline>=TODAY:e.d>=TODAY);
-const state={tab:"offline",lang:"",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
+const state={tab:"offline",lang:"",price:"",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
 try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
 try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
 const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state.saved]))}catch(e){}};
@@ -490,6 +491,7 @@ const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4
 
 function opts(sel,label,map){sel.innerHTML=`<option value="">${label}</option>`+Object.entries(map).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
 const LANGS={ru:"на русском",en:"на английском"};
+const isFree=e=>{const p=String(e.price||"").trim();if(/^(бесплатно|вход свободный|свободный вход|0\s*₽)/i.test(p))return true;if(/\d/.test(p))return false;return /бесплат|вход свободный|свободный вход/i.test(p+" "+String(e.reg||""))};
 const langOf=e=>e.lang==="en"?"en":"ru";
 const isOnline=e=>!!e.online||e.city==="Онлайн";
 const isOffline=e=>e.city!=="Онлайн";
@@ -529,6 +531,7 @@ function pass(e){
   if(state.field&&e.field!==state.field)return false;
   if(state.type&&e.type!==state.type)return false;
   if(state.lang&&langOf(e)!==state.lang)return false;
+  if(state.price==="free"&&!isFree(e))return false;
   if(state.q){const h=[e.title,e.who,e.city,e.place,e.org,e.desc,e.lang==="en"?"английский english":"",FIELDS[e.field]||"",TYPES[e.type]||""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
   return true;
 }
@@ -594,7 +597,7 @@ function render(){
     sb.hidden=false;
     sb.innerHTML=`<div class="soon-head"><h2>Успейте подать заявку</h2><button data-go-learn>Все школы и программы</button></div><ul class="soon-list">${soon.map(e=>{const n=daysTo(e.deadline);return `<li><button data-open-learn="${e.id}"><span class="s-dl">до ${fmt(e.deadline)}</span><span class="s-ttl">${esc(e.title)}<small>${esc(e.city)} · начало ${fmt(e.d)}</small></span><span class="left${n<=7?" urgent":""}">${leftTxt(n)}</span></button></li>`}).join("")}</ul>`;
   }else sb.hidden=true;
-  const active=state.q||state.city||state.field||state.type||state.lang||state.when;
+  const active=state.q||state.city||state.field||state.type||state.lang||state.price||state.when;
   $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${state.tab==="online"?" · время московское":""}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
   if(active)$("#reset").onclick=reset;
   if(!list.length){$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?"Здесь появятся события, которые вы сохраните.":state.tab==="past"?"Здесь появятся события последних 30 дней. На них можно отметить, что вы сходили.":"По этим условиям ничего нет. Попробуйте убрать часть фильтров."}</div>`;return}
@@ -618,7 +621,7 @@ function render(){
   });
   $("#list").innerHTML=html;
 }
-function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",lang:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fLang"].forEach(s=>$(s).value="");render()}
+function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",lang:"",price:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>$(s).value="");render()}
 
 $("#list").addEventListener("click",ev=>{
   const a=ev.target.closest("[data-attend]");
@@ -648,6 +651,7 @@ $("#fCity").onchange=e=>{state.city=e.target.value;render()};
 $("#fField").onchange=e=>{state.field=e.target.value;render()};
 $("#fType").onchange=e=>{state.type=e.target.value;render()};
 $("#fLang").onchange=e=>{state.lang=e.target.value;render()};
+$("#fPrice").onchange=e=>{state.price=e.target.value;render()};
 document.querySelectorAll(".when button").forEach(b=>b.onclick=()=>{state.when=b.dataset.when;document.querySelectorAll(".when button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()});
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{
   if(b.dataset.tab==="add"){$("#add").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});return}
@@ -731,8 +735,8 @@ function openFromHash(){
   const m=location.hash.match(/^#event-([A-Za-z0-9_\-.~:@+]+)$/);if(!m)return false;
   const e=ALL.find(x=>x.id===m[1]);if(!e)return false;
   const tab=tabFor(e);if(!tab)return false;
-  Object.assign(state,{tab,open:e.id,q:"",city:"",field:"",type:"",lang:"",when:""});
-  ["#q","#fCity","#fField","#fType","#fLang"].forEach(s=>{const el=$(s);if(el)el.value=""});
+  Object.assign(state,{tab,open:e.id,q:"",city:"",field:"",type:"",lang:"",price:"",when:""});
+  ["#q","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>{const el=$(s);if(el)el.value=""});
   document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));
   document.querySelectorAll(".nav button").forEach(x=>x.setAttribute("aria-current",x.dataset.tab===tab));
   refreshCities();render();
