@@ -33,7 +33,7 @@ SESSION_TTL = 14 * 24 * 3600
 MAX_BODY = 32 * 1024
 
 FIELDS = {"space", "bio", "med", "chem", "phys", "earth", "it", "hum", "ocean", "media", "lit", "ling", "edu"}
-TYPES = {"lecture", "course", "cafe", "school", "talk", "quiz", "winter", "module", "contest", "fest", "tour"}
+TYPES = {"lecture", "course", "cafe", "school", "talk", "quiz", "winter", "module", "contest", "fest", "tour", "expo"}
 
 _lock = threading.Lock()
 _events_cache = {"mtime": None, "data": []}
