@@ -760,7 +760,7 @@ function useEvents(list,updated){
 }
 function staticMode(){
   STATIC=true;
-  const f=$("#addForm");if(f){f.hidden=true;const n=document.createElement("p");n.className="ok";n.textContent="Приём анонсов от организаторов откроется совсем скоро. А пока мы сами собираем события со всей страны каждый день.";f.after(n)}
+  const f=$("#addForm");if(f){f.hidden=true;const n=document.createElement("p");n.className="ok";n.innerHTML="Пока форма в разработке, присылайте анонсы на почту <a href=\"mailto:carpescience1@gmail.com?subject=%D0%90%D0%BD%D0%BE%D0%BD%D1%81%20%D0%B4%D0%BB%D1%8F%20carpe%20science\" style=\"color:var(--ink)\">carpescience1@gmail.com</a> — достаточно ссылки на официальный анонс. Особенно ждём события из небольших городов: проверим и добавим.";f.after(n)}
   render();
   fetch("data/events.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(list=>{
     if(!Array.isArray(list))return;
