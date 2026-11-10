@@ -32,7 +32,7 @@ MSK = timezone(timedelta(hours=3))
 SESSION_TTL = 14 * 24 * 3600
 MAX_BODY = 32 * 1024
 
-FIELDS = {"space", "bio", "med", "chem", "phys", "earth", "it", "hum", "ocean", "media", "lit", "ling", "edu", "art"}
+FIELDS = {"space", "bio", "med", "chem", "phys", "earth", "it", "hum", "ocean", "media", "lit", "ling", "edu", "art", "career"}
 TYPES = {"lecture", "course", "cafe", "school", "talk", "quiz", "winter", "module", "contest", "fest", "tour", "expo"}
 
 _lock = threading.Lock()
