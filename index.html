@@ -174,6 +174,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .left{font-size:13px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--soft)}
 .left.urgent{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .month .mnote{font-size:13px;color:var(--faint);margin-left:auto}
+.mhead{width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;cursor:pointer;text-align:left;font:inherit;padding-block:28px 14px}
+.mhead:first-child{padding-top:8px}
+.mhead .mcount{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--soft);text-transform:none;font-family:inherit;letter-spacing:0}
+.mhead .mcount i{font-style:normal;font-size:22px;line-height:1;width:22px;text-align:center;color:var(--ink,inherit)}
+.mhead:hover span:first-child{text-decoration:underline;text-underline-offset:4px}
+.more{display:block;margin:22px auto 6px;padding:11px 20px;border:1px solid var(--line);border-radius:999px;background:none;color:inherit;font:inherit;font-size:15px;cursor:pointer}
+.more:hover{border-color:currentColor}
+@media(max-width:560px){.mhead small{display:none}.mhead{padding-block:22px 12px}}
+#toTop{position:fixed;right:16px;bottom:16px;z-index:40;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--bg,#fff);color:inherit;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.18)}
 @media (max-width:520px){.soon{padding:18px}.soon-list button{grid-template-columns:1fr auto;gap:4px 12px}.s-dl{grid-column:1/-1}}
 .empty{padding-block:72px;color:var(--soft);font:300 22px var(--serif)}
 
@@ -479,7 +488,8 @@ const leftTxt=n=>n===0?"последний день":n===1?"остался 1 д�
 /* программа открыта для заявок: дедлайн не прошёл; без дедлайна — пока не началась */
 const openLearn=e=>e.kind==="learn"&&(e.deadline?e.deadline>=TODAY:e.d>=TODAY);
 const fieldsOf=e=>{const a=Array.isArray(e.fields)?e.fields:[];return [e.field,...a.filter(f=>f!==e.field)].filter(Boolean)};
-const state={tab:"offline",lang:"",price:"",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
+const GROUP_STEP=25;
+const state={coll:{},more:{},tab:"offline",lang:"",price:"",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
 try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
 try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
 const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state.saved]))}catch(e){}};
@@ -592,7 +602,7 @@ function render(){
   const cur=ALL.filter(current),ev=cur.filter(e=>e.kind==="event"),nOnline=ev.filter(isOnline).length;
   const nc=new Set(ev.filter(isOffline).map(e=>e.city)).size,np=ALL.filter(openLearn).length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
   $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${plural(ev.length,"событие","события","событий")} в расписании</span></div><div class="stat"><b>${nc}</b><span>${plural(nc,"город","города","городов")} в афише</span></div><div class="stat"><b>${nOnline}</b><span>${plural(nOnline,"событие","события","событий")} онлайн — из любого города</span></div><div class="stat"><b>${np}</b><span>${plural(np,"программа","программы","программ")} с открытым набором</span></div>`;
-  const soon=ALL.filter(e=>openLearn(e)&&e.deadline&&daysTo(e.deadline)<=30).sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,5);
+  const soon=ALL.filter(e=>openLearn(e)&&e.deadline&&daysTo(e.deadline)<=30).sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,matchMedia("(max-width:560px)").matches?3:5);
   const sb=$("#soon");
   if(soon.length){
     sb.hidden=false;
@@ -606,27 +616,37 @@ function render(){
   if(state.tab==="learn"){
     const withDl=list.filter(e=>e.deadline).sort((a,b)=>a.deadline.localeCompare(b.deadline)),noDl=list.filter(e=>!e.deadline);
     const byDl={};withDl.forEach(e=>{(byDl[e.deadline]=byDl[e.deadline]||[]).push(e)});
-    Object.keys(byDl).sort().forEach(d=>{
-      const x=dt(d),mk=d.slice(0,7);
-      if(mk!==lastM){html+=`<div class="month"><span>${MONN[x.getMonth()]}</span><small>${x.getFullYear()}</small><span class="mnote">приём заявок до</span></div>`;lastM=mk}
-      html+=`<section class="day"><div class="dlabel"><b>${x.getDate()}</b><span>${MON[x.getMonth()]}<em>${WD[x.getDay()]}</em></span></div><div class="items">${byDl[d].map(item).join("")}</div></section>`;
-    });
-    if(noDl.length)html+=`<div class="month"><span>Срок подачи не указан</span><small>уточняйте у организатора</small></div><section class="day"><div class="dlabel"><span>приём открыт</span></div><div class="items">${noDl.map(item).join("")}</div></section>`;
+    html+=months(byDl,"заявки до",active);
+    if(noDl.length){const k="learn-nodl",op=isOpen(k,!!active);html+=ghead(k,op,"Срок подачи не указан","уточняйте у организатора",noDl.length);if(op)html+=`<section class="day"><div class="dlabel"><span>приём открыт</span></div><div class="items">${noDl.map(item).join("")}</div></section>`}
     $("#list").innerHTML=html;return;
   }
   const ongoing=state.tab==="past"?[]:list.filter(e=>e.d<TODAY).sort((a,b)=>(a.dEnd||a.d).localeCompare(b.dEnd||b.d));
-  if(ongoing.length)html+=`<div class="month"><span>Идут сейчас</span><small>выставки, фестивали и циклы, начавшиеся раньше</small></div><section class="day"><div class="dlabel"><span>до даты в карточке</span></div><div class="items">${ongoing.map(item).join("")}</div></section>`;
+  if(ongoing.length){const k=state.tab+"-ongoing",op=isOpen(k,!!active);html+=ghead(k,op,"Идут сейчас","выставки, фестивали и циклы, начавшиеся раньше",ongoing.length);if(op)html+=`<section class="day"><div class="dlabel"><span>до даты в карточке</span></div><div class="items">${ongoing.map(item).join("")}</div></section>`}
   const byDay={};list.filter(e=>!ongoing.includes(e)).forEach(e=>{(byDay[e.d]=byDay[e.d]||[]).push(e)});
-  Object.keys(byDay).sort().forEach(d=>{
-    const x=dt(d),mk=d.slice(0,7);
-    if(mk!==lastM){html+=`<div class="month"><span>${MONN[x.getMonth()]}</span><small>${x.getFullYear()}</small></div>`;lastM=mk}
-    html+=`<section class="day"><div class="dlabel"><b>${x.getDate()}</b><span>${MON[x.getMonth()]}<em>${WD[x.getDay()]}</em></span></div><div class="items">${byDay[d].map(item).join("")}</div></section>`;
-  });
+  html+=months(byDay,"",active,state.tab==="past");
   $("#list").innerHTML=html;
+}
+function isOpen(k,def){return k in state.coll?state.coll[k]:def}
+function ghead(k,open,t,sm,n,lbl){return `<button class="month mhead" data-group="${k}" aria-expanded="${open}"><span>${t}</span><small>${sm}</small><span class="mcount">${n} ${state.tab==="learn"?plural(n,"программа","программы","программ"):plural(n,"событие","события","событий")}<i aria-hidden="true">${open?"−":"+"}</i></span></button>`}
+function months(byDay,note,active,rev){
+  const days=Object.keys(byDay).sort();if(rev)days.reverse();
+  const byM={};days.forEach(d=>{(byM[d.slice(0,7)]=byM[d.slice(0,7)]||[]).push(d)});
+  let html="";
+  Object.keys(byM).forEach((mk,i)=>{
+    const ds=byM[mk],x=dt(ds[0]),n=ds.reduce((s,d)=>s+byDay[d].length,0),k=state.tab+"-"+mk,op=isOpen(k,!!active||i===0);
+    html+=ghead(k,op,MONN[x.getMonth()],x.getFullYear()+(note?" · "+note:""),n);
+    if(!op)return;
+    const lim=state.more[k]||GROUP_STEP;let shown=0;
+    for(const d of ds){if(shown>=lim)break;const y=dt(d);html+=`<section class="day"><div class="dlabel"><b>${y.getDate()}</b><span>${MON[y.getMonth()]}<em>${WD[y.getDay()]}</em></span></div><div class="items">${byDay[d].map(item).join("")}</div></section>`;shown+=byDay[d].length}
+    const rest=n-shown;if(rest>0)html+=`<button class="more" data-more="${k}">Показать ещё ${Math.min(GROUP_STEP,rest)} из ${rest}</button>`;
+  });
+  return html;
 }
 function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",lang:"",price:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>$(s).value="");render()}
 
 $("#list").addEventListener("click",ev=>{
+  const g=ev.target.closest("[data-group]");if(g){const k=g.dataset.group;state.coll[k]=g.getAttribute("aria-expanded")!=="true";render();const h=document.querySelector(`[data-group="${k}"]`);h&&h.focus({preventScroll:true});return}
+  const m=ev.target.closest("[data-more]");if(m){state.more[m.dataset.more]=(state.more[m.dataset.more]||GROUP_STEP)+GROUP_STEP;render();return}
   const a=ev.target.closest("[data-attend]");
   if(a){const id=a.dataset.attend;a.disabled=true;
     post("/api/attend",{id}).then(r=>r.json().then(j=>({ok:r.ok,j}))).then(({ok,j})=>{
@@ -819,5 +839,7 @@ let fitT;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fitMa
   document.addEventListener("click",function(e){if(e.target.closest("[data-cookie-settings]"))box.hidden=false});
 })();
 </script>
+<button id="toTop" hidden aria-label="Наверх, к фильтрам">↑</button>
+<script>(function(){var b=document.getElementById("toTop");var t=document.getElementById("list");addEventListener("scroll",function(){b.hidden=scrollY<900},{passive:true});b.onclick=function(){var f=document.querySelector(".nav")||t;f.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}})();</script>
 </body>
 </html>
