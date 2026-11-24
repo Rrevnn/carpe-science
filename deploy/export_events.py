@@ -23,6 +23,13 @@ for f in files:
     body = j["data"] if isinstance(j.get("data"), dict) else j
     out.append(dict(body, id=os.path.basename(f)[:-5]))
 out = [e for e in out if e.get("d") and e.get("title") and e.get("kind")]
+
+# школьные предметы для фильтра «Предмет»: поле subjects из базы главнее, иначе подбираем
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from subjects import subjects_for  # noqa: E402
+for e in out:
+    if not isinstance(e.get("subjects"), list):
+        e["subjects"] = subjects_for(e)
 out.sort(key=lambda e: (e["d"], e["id"]))
 
 try:
