@@ -266,6 +266,13 @@ footer{padding-block:120px 0;overflow:hidden}
   .stat b{font-size:36px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.langsw{display:inline-flex}
+.langsw select{height:36px;border:1px solid var(--line);background-color:transparent;color:var(--ink);border-radius:999px;padding:0 32px 0 15px;font:400 14px/1 var(--sans);cursor:pointer;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--soft) 50%),linear-gradient(135deg,var(--soft) 50%,transparent 50%);background-position:right 17px top 52%,right 13px top 52%;background-size:4px 4px;background-repeat:no-repeat;transition:border-color .2s}
+.langsw select:hover,.langsw select:focus{border-color:var(--ink);outline:none}
+.langsw select option{background:var(--bg);color:var(--ink)}
+.cnote{margin:16px 0 0;font-size:13px;line-height:1.5;color:var(--faint)}
+@media (max-width:520px){.langsw{order:2;margin-left:auto}.top>.pill{order:2}}
 </style>
 
 </head>
@@ -274,27 +281,28 @@ footer{padding-block:120px 0;overflow:hidden}
 <div class="wrap">
   <header class="top">
     <a class="logo" href="#top" id="top">carpe science</a>
-    <nav class="menu" aria-label="Разделы сайта">
-      <a href="#schedule">Расписание</a>
-      <a href="#faq">Вопросы</a>
-      <a href="#about">О проекте</a>
-      <a href="#add">Организаторам</a>
-      <a href="#support">Поддержать проект</a>
+    <nav class="menu" aria-label="Разделы сайта" data-i18n-aria="nav_aria">
+      <a href="#schedule" data-i18n="nav_schedule">Расписание</a>
+      <a href="#faq" data-i18n="nav_faq">Вопросы</a>
+      <a href="#about" data-i18n="nav_about">О проекте</a>
+      <a href="#add" data-i18n="nav_org">Организаторам</a>
+      <a href="#support" data-i18n="nav_support">Поддержать проект</a>
     </nav>
-    <a class="pill" href="#add"><span class="lbl">Добавить событие</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+    <label class="langsw"><span class="vh" data-i18n-dyn="uiLang">Язык сайта</span><select id="uiLang"></select></label>
+    <a class="pill" href="#add"><span class="lbl" data-i18n="add_btn">Добавить событие</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
   </header>
 
   <section class="hero">
     <div class="hero-top">
-      <p>Научные лекции, фестивали и школы по всей России, а ещё лингвистика, литература, искусство и архитектура, медиа и кино</p>
-      <p>Обновляется каждый день</p>
+      <p data-i18n="hero_p">Научные лекции, фестивали и школы по всей России, в Беларуси, Казахстане и Узбекистане, а ещё лингвистика, литература, искусство и архитектура, медиа и кино</p>
+      <p data-i18n="hero_daily">Обновляется каждый день</p>
     </div>
     <div class="wm" data-fit="0.9" aria-label="carpe science">carpe sc<span class="ii"><svg class="iota" viewBox="0 0 46 100" aria-hidden="true"><path d="M10 8 V50 C10 80 21 92 38 92" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg><b></b></span>ence</div>
     <div class="hero-body">
       <div class="lead">
-        <h1>Время ловить науку и расширять горизонты</h1>
-        <p>Мы собираем открытые лекции, научные кафе, фестивали и школы из лекториев, музеев и университетов, чтобы вам было проще выбрать, куда пойти на этой неделе.</p>
-        <div><a class="pill down" href="#schedule"><span class="lbl">Смотреть расписание</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 2v10M3 8l4 4 4-4"/></svg></span></a></div>
+        <h1 data-i18n="hero_h1">Время ловить науку и расширять горизонты</h1>
+        <p data-i18n="hero_lead">Мы собираем открытые лекции, научные кафе, фестивали и школы из лекториев, музеев и университетов, чтобы вам было проще выбрать, куда пойти на этой неделе.</p>
+        <div><a class="pill down" href="#schedule"><span class="lbl" data-i18n="hero_go">Смотреть расписание</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 2v10M3 8l4 4 4-4"/></svg></span></a></div>
       </div>
     </div>
     <div class="stats" id="factsLine"></div>
@@ -303,79 +311,81 @@ footer{padding-block:120px 0;overflow:hidden}
 
   <section class="section" id="schedule">
     <div class="section-head">
-      <h2 class="sh"><span>ближайшие</span><span>события</span></h2>
-      <div class="tabs nav" role="group" aria-label="Раздел">
-        <button id="t-offline" data-tab="offline" aria-current="true">Очно<span id="n-offline"></span></button>
-        <button id="t-online" data-tab="online" aria-current="false">Онлайн<span id="n-online"></span></button>
-        <button id="t-learn" data-tab="learn" aria-current="false">Школы и программы<span id="n-learn"></span></button>
-        <button id="t-saved" data-tab="saved" aria-current="false">Сохранённое<span id="n-saved"></span></button>
-        <button id="t-past" data-tab="past" aria-current="false">Прошедшие</button>
+      <h2 class="sh" data-i18n="sh_sched"><span>ближайшие</span><span>события</span></h2>
+      <div class="tabs nav" role="group" aria-label="Раздел" data-i18n-aria="tabs_aria">
+        <button id="t-offline" data-tab="offline" aria-current="true"><span data-i18n="tab_offline">Очно</span><span id="n-offline"></span></button>
+        <button id="t-online" data-tab="online" aria-current="false"><span data-i18n="tab_online">Онлайн</span><span id="n-online"></span></button>
+        <button id="t-learn" data-tab="learn" aria-current="false"><span data-i18n="tab_learn">Школы и программы</span><span id="n-learn"></span></button>
+        <button id="t-saved" data-tab="saved" aria-current="false"><span data-i18n="tab_saved">Сохранённое</span><span id="n-saved"></span></button>
+        <button id="t-past" data-tab="past" aria-current="false"><span data-i18n="tab_past">Прошедшие</span></button>
       </div>
     </div>
     <div class="bar" id="bar">
-      <label class="search">Поиск<input id="q" type="search" placeholder="Лектор, тема, площадка"></label>
-      <label>Город<select id="fCity"></select></label>
-      <label>Область<select id="fField"></select></label>
-      <label>Формат<select id="fType"></select></label>
-      <label>Язык<select id="fLang"><option value="">Любой</option><option value="ru">На русском</option><option value="en">На английском</option></select></label>
-      <label>Цена<select id="fPrice"><option value="">Любая</option><option value="free">Только бесплатные</option></select></label>
+      <label class="search"><span data-i18n="f_search">Поиск</span><input id="q" type="search" placeholder="Лектор, тема, площадка" data-i18n-ph="f_search_ph"></label>
+      <label><span data-i18n="f_country">Страна</span><select id="fCountry"></select></label>
+      <label><span data-i18n="f_city">Город</span><select id="fCity"></select></label>
+      <label><span data-i18n="f_field">Область</span><select id="fField"></select></label>
+      <label><span data-i18n="f_type">Формат</span><select id="fType"></select></label>
+      <label><span data-i18n="f_lang">Язык</span><select id="fLang"><option value="" data-i18n="f_lang_any">Любой</option><option value="ru" data-i18n="f_lang_ru">На русском</option><option value="en" data-i18n="f_lang_en">На английском</option></select></label>
+      <label><span data-i18n="f_price">Цена</span><select id="fPrice"><option value="" data-i18n="f_price_any">Любая</option><option value="free" data-i18n="f_price_free">Только бесплатные</option></select></label>
     </div>
     <div class="under">
-      <div class="when" role="group" aria-label="Период">
-        <button data-when="" aria-pressed="true">Все даты</button>
-        <button data-when="week" aria-pressed="false">Ближайшие 7 дней</button>
-        <button data-when="weekend" aria-pressed="false">Выходные</button>
-        <button data-when="month" aria-pressed="false">Этот месяц</button>
+      <div class="when" role="group" aria-label="Период" data-i18n-aria="when_aria">
+        <button data-when="" aria-pressed="true" data-i18n="when_all">Все даты</button>
+        <button data-when="week" aria-pressed="false" data-i18n="when_week">Ближайшие 7 дней</button>
+        <button data-when="weekend" aria-pressed="false" data-i18n="when_weekend">Выходные</button>
+        <button data-when="month" aria-pressed="false" data-i18n="when_month">Этот месяц</button>
       </div>
       <div class="count"><span id="count"></span><span id="updated"></span></div>
     </div>
+    <p class="cnote" id="contentNote" hidden></p>
     <main class="days" id="list"></main>
   </section>
 
   <section class="section" id="faq">
     <div class="faq-grid">
-      <h2 class="sh"><span>вопросы?</span><span>отвечаем</span></h2>
+      <h2 class="sh" data-i18n="sh_faq"><span>вопросы?</span><span>отвечаем</span></h2>
       <div class="faq">
-        <details><summary>Откуда берутся события?<i aria-hidden="true">+</i></summary><p>Из открытых анонсов лекториев, музеев, университетов, библиотек и научных центров. Новые события мы ищем каждый день, а дважды в неделю перепроверяем уже опубликованные. У каждого события есть ссылка на страницу организатора. Подробнее — в разделе <a href="#about" style="color:var(--ink)">«О проекте»</a>.</p></details>
-        <details><summary>Что значит пометка «новое, не проверено»?<i aria-hidden="true">+</i></summary><p>Событие нашлось автоматически, и его ещё не сверили вручную. Перед поездкой откройте страницу организатора: время и формат иногда меняются.</p></details>
-        <details><summary>По какому времени указаны события?<i aria-hidden="true">+</i></summary><p>Очные события — по местному времени города, где они проходят. Онлайн-трансляции — по московскому времени. В карточке события это подписано рядом со временем.</p></details>
-        <details><summary>Это бесплатно?<i aria-hidden="true">+</i></summary><p>Пользоваться расписанием бесплатно. Многие лекции тоже бесплатные, но часто нужна регистрация. Стоимость и условия указаны в карточке события.</p></details>
-        <details><summary>Как добавить своё мероприятие?<i aria-hidden="true">+</i></summary><p>Заполните форму ниже и укажите ссылку на официальный анонс. Мы сверим данные и опубликуем событие. Подходят открытые лекции, фестивали, экскурсии в лаборатории, научные кафе, школы и курсы.</p></details>
+        <details><summary><span data-i18n="faq1_q">Откуда берутся события?</span><i aria-hidden="true">+</i></summary><p data-i18n="faq1_a">Из открытых анонсов лекториев, музеев, университетов, библиотек и научных центров. Новые события мы ищем каждый день, а дважды в неделю перепроверяем уже опубликованные. У каждого события есть ссылка на страницу организатора. Подробнее — в разделе <a href="#about" style="color:var(--ink)">«О проекте»</a>.</p></details>
+        <details><summary><span data-i18n="faq2_q">Что значит пометка «новое, не проверено»?</span><i aria-hidden="true">+</i></summary><p data-i18n="faq2_a">Событие нашлось автоматически, и его ещё не сверили вручную. Перед поездкой откройте страницу организатора: время и формат иногда меняются.</p></details>
+        <details><summary><span data-i18n="faq3_q">По какому времени указаны события?</span><i aria-hidden="true">+</i></summary><p data-i18n="faq3_a">Очные события — по местному времени города, где они проходят. Онлайн-трансляции — по московскому времени. В карточке события это подписано рядом со временем.</p></details>
+        <details><summary><span data-i18n="faq4_q">Это бесплатно?</span><i aria-hidden="true">+</i></summary><p data-i18n="faq4_a">Пользоваться расписанием бесплатно. Многие лекции тоже бесплатные, но часто нужна регистрация. Стоимость и условия указаны в карточке события.</p></details>
+        <details><summary><span data-i18n="faq5_q">Как добавить своё мероприятие?</span><i aria-hidden="true">+</i></summary><p data-i18n="faq5_a">Заполните форму ниже и укажите ссылку на официальный анонс. Мы сверим данные и опубликуем событие. Подходят открытые лекции, фестивали, экскурсии в лаборатории, научные кафе, школы и курсы.</p></details>
       </div>
     </div>
   </section>
 
   <section class="section" id="about">
     <div class="faq-grid">
-      <h2 class="sh"><span>о проекте</span><span>и источниках</span></h2>
+      <h2 class="sh" data-i18n="sh_about"><span>о проекте</span><span>и источниках</span></h2>
       <div class="about">
-        <p><b style="color:var(--ink);font-weight:500">Carpe science</b> — афиша научно-популярных событий по всей России: лекции, фестивали, школы, олимпиады и онлайн-трансляции, а ещё лингвистика, литература, искусство и архитектура, медиа и кино. Мы собираем их в одном месте, чтобы у человека в любом городе был доступ к знаниям.</p>
-        <div><h3>Откуда события</h3><p>Мы находим события в открытых анонсах организаторов: на сайтах университетов, музеев, библиотек, планетариев, научных центров и фестивалей. Часть анонсов присылают сами организаторы и читатели. Поиск идёт автоматически, а каждое событие сверяется с первоисточником. Новые записи помечены «не проверено», пока их не сверили.</p></div>
-        <div><h3>Как мы используем информацию</h3><ul>
+        <p data-i18n="about_p"><b style="color:var(--ink);font-weight:500">Carpe science</b> — афиша научно-популярных событий по всей России, в Беларуси, Казахстане и Узбекистане: лекции, фестивали, школы, олимпиады и онлайн-трансляции, а ещё лингвистика, литература, искусство и архитектура, медиа и кино. Мы собираем их в одном месте, чтобы у человека в любом городе был доступ к знаниям.</p>
+        <div><h3 data-i18n="about_src_h">Откуда события</h3><p data-i18n="about_src">Мы находим события в открытых анонсах организаторов: на сайтах университетов, музеев, библиотек, планетариев, научных центров и фестивалей. Часть анонсов присылают сами организаторы и читатели. Поиск идёт автоматически, а каждое событие сверяется с первоисточником. Новые записи помечены «не проверено», пока их не сверили.</p></div>
+        <div><h3 data-i18n="about_use_h">Как мы используем информацию</h3><ul data-i18n="about_use">
           <li>Берём только факты: название, дату, место, лектора, стоимость и способ попасть на событие.</li>
           <li>Описания пишем своими словами и не копируем тексты анонсов.</li>
           <li>Не используем афиши, фотографии и другие изображения организаторов.</li>
           <li>У каждого события есть ссылка на официальный анонс. Регистрация, билеты и трансляции всегда идут через организатора.</li>
           <li>Не обходим ограничения сайтов: если сайт закрыт для автоматического просмотра, мы его не используем.</li>
         </ul></div>
-        <div><h3>Всегда сверяйтесь с организатором</h3><p>Даты и условия могут меняться. Мы регулярно перепроверяем события, но перед походом откройте официальный анонс по ссылке в карточке.</p></div>
-        <div><h3>Организаторам</h3><p>Если вы нашли у нас ошибку, хотите, чтобы событие убрали, или хотите добавить своё — напишите нам: <a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a>. Исправим или уберём в течение нескольких дней. Лекторы тоже могут попросить убрать своё имя из карточки события.</p></div>
-        <div id="support"><h3>Поддержать проект</h3><p>Афиша бесплатная и такой останется. Если хотите помочь ей расти — оплатить сервер, добавить новые города и сделать напоминания на почту, — можно поддержать проект любой суммой. Платёж проходит через сервис CloudTips от Т-Банка, сайт не получает данные вашей карты.</p><div style="margin-top:14px"><a class="pill" href="https://pay.cloudtips.ru/p/1a1f0305" target="_blank" rel="noopener" id="donate"><span class="lbl">Поддержать проект</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a></div></div>
+        <div><h3 data-i18n="about_check_h">Всегда сверяйтесь с организатором</h3><p data-i18n="about_check">Даты и условия могут меняться. Мы регулярно перепроверяем события, но перед походом откройте официальный анонс по ссылке в карточке.</p></div>
+        <div><h3 data-i18n="about_org_h">Организаторам</h3><p data-i18n="about_org">Если вы нашли у нас ошибку, хотите, чтобы событие убрали, или хотите добавить своё — напишите нам: <a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a>. Исправим или уберём в течение нескольких дней. Лекторы тоже могут попросить убрать своё имя из карточки события.</p></div>
+        <div id="support"><h3 data-i18n="about_sup_h">Поддержать проект</h3><p data-i18n="about_sup">Афиша бесплатная и такой останется. Если хотите помочь ей расти — оплатить сервер, добавить новые города и сделать напоминания на почту, — можно поддержать проект любой суммой. Платёж проходит через сервис CloudTips от Т-Банка, сайт не получает данные вашей карты.</p><div style="margin-top:14px"><a class="pill" href="https://pay.cloudtips.ru/p/1a1f0305" target="_blank" rel="noopener" id="donate"><span class="lbl" data-i18n="sup_btn">Поддержать проект</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a></div></div>
       </div>
     </div>
   </section>
 
   <section class="section" id="privacy">
     <div class="faq-grid">
-      <h2 class="sh"><span>политика</span><span>конфиденциальности</span></h2>
+      <h2 class="sh" data-i18n="sh_priv"><span>политика</span><span>конфиденциальности</span></h2>
       <div class="about">
-        <p>Здесь описано, какие данные собирает сайт carpescience.ru и зачем. Мы стараемся собирать как можно меньше.</p>
-        <div><h3>Что мы не собираем</h3><p>На сайте нет регистрации и личных кабинетов. Мы не просим имя, телефон или почту. Форма для организаторов тоже не собирает контактные данные: в ней только сведения о мероприятии и ссылка на официальный анонс.</p></div>
-        <div><h3>Статистика посещений</h3><p>Только если вы нажали «Принять» в уведомлении о cookie, на сайте работает сервис Яндекс Метрика (ООО «Яндекс», Россия). Он сохраняет cookie и обезличенно учитывает посещения: сколько людей зашло, из какого города, с какого устройства и браузера, откуда пришли и какие ссылки открывали. Запись действий на экране (Вебвизор) не используется. Эти данные нужны нам только для того, чтобы понимать, сколько людей пользуется афишей и какие разделы им полезны. Мы не передаём их третьим лицам и не используем для рекламы. Подробнее о том, как Яндекс обрабатывает данные, — в <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">политике конфиденциальности Яндекса</a>.</p></div>
-        <div><h3>Данные в вашем браузере</h3><p>Список «Сохранённое» и ваш выбор насчёт cookie хранятся только в вашем браузере (localStorage) и никуда не отправляются. Их можно удалить, очистив данные сайта в настройках браузера.</p></div>
-        <div><h3>Пожертвования</h3><p>Если вы поддерживаете проект, платёж обрабатывает сервис CloudTips (Т-Банк) на своей странице. Данные карты и платежа вводятся только там, сайт carpescience.ru их не получает и не хранит.</p></div>
-        <div><h3>Как отказаться</h3><p>Если вы нажали «Отказаться», статистика не собирается. Передумать можно в любой момент: <button type="button" class="linkbtn" data-cookie-settings>изменить настройки cookie</button>. Отозвать согласие и задать вопрос можно по почте <a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a>.</p></div>
-        <p>Политика действует с 1 ноября 2026 года.</p>
+        <p data-i18n="priv_p">Здесь описано, какие данные собирает сайт carpescience.ru и зачем. Мы стараемся собирать как можно меньше.</p>
+        <div><h3 data-i18n="priv_no_h">Что мы не собираем</h3><p data-i18n="priv_no">На сайте нет регистрации и личных кабинетов. Мы не просим имя, телефон или почту. Форма для организаторов тоже не собирает контактные данные: в ней только сведения о мероприятии и ссылка на официальный анонс.</p></div>
+        <div><h3 data-i18n="priv_stat_h">Статистика посещений</h3><p data-i18n="priv_stat">Только если вы нажали «Принять» в уведомлении о cookie, на сайте работает сервис Яндекс Метрика (ООО «Яндекс», Россия). Он сохраняет cookie и обезличенно учитывает посещения: сколько людей зашло, из какого города, с какого устройства и браузера, откуда пришли и какие ссылки открывали. Запись действий на экране (Вебвизор) не используется. Эти данные нужны нам только для того, чтобы понимать, сколько людей пользуется афишей и какие разделы им полезны. Мы не передаём их третьим лицам и не используем для рекламы. Подробнее о том, как Яндекс обрабатывает данные, — в <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">политике конфиденциальности Яндекса</a>.</p></div>
+        <div><h3 data-i18n="priv_local_h">Данные в вашем браузере</h3><p data-i18n="priv_local">Список «Сохранённое», выбранный язык сайта и ваш выбор насчёт cookie хранятся только в вашем браузере (localStorage) и никуда не отправляются. Их можно удалить, очистив данные сайта в настройках браузера.</p></div>
+        <div><h3 data-i18n="priv_don_h">Пожертвования</h3><p data-i18n="priv_don">Если вы поддерживаете проект, платёж обрабатывает сервис CloudTips (Т-Банк) на своей странице. Данные карты и платежа вводятся только там, сайт carpescience.ru их не получает и не хранит.</p></div>
+        <div><h3 data-i18n="priv_opt_h">Как отказаться</h3><p data-i18n="priv_opt">Если вы нажали «Отказаться», статистика не собирается. Передумать можно в любой момент: <button type="button" class="linkbtn" data-cookie-settings>изменить настройки cookie</button>. Отозвать согласие и задать вопрос можно по почте <a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a>.</p></div>
+        <p data-i18n="priv_date">Политика действует с 1 ноября 2026 года, обновлена 24 ноября 2026 года.</p>
       </div>
     </div>
   </section>
@@ -383,33 +393,33 @@ footer{padding-block:120px 0;overflow:hidden}
   <section class="section" id="add">
     <div class="submit-grid">
       <div style="display:grid;gap:28px;align-content:start">
-        <h2 class="sh"><span>добавить</span><span>событие</span></h2>
-        <div class="intro-text"><p>Проводите научное мероприятие? Пришлите анонс, и после проверки он появится в расписании. Публикация бесплатная.</p><p>Мы сверяем каждое событие с официальной страницей организатора, поэтому ссылка обязательна. Контактные данные не нужны.</p></div>
+        <h2 class="sh" data-i18n="sh_add"><span>добавить</span><span>событие</span></h2>
+        <div class="intro-text" data-i18n="add_intro"><p>Проводите научное мероприятие? Пришлите анонс, и после проверки он появится в расписании. Публикация бесплатная.</p><p>Мы сверяем каждое событие с официальной страницей организатора, поэтому ссылка обязательна. Контактные данные не нужны.</p></div>
       </div>
       <form id="addForm">
-        <label>Название<input id="sTitle" type="text" required></label>
+        <label><span data-i18n="s_title">Название</span><input id="sTitle" type="text" required></label>
         <div class="f2">
-          <label>Лектор или ведущий<input id="sWho" type="text"></label>
-          <label>Организатор<input id="sOrg" type="text"></label>
+          <label><span data-i18n="s_who">Лектор или ведущий</span><input id="sWho" type="text"></label>
+          <label><span data-i18n="s_org">Организатор</span><input id="sOrg" type="text"></label>
         </div>
         <div class="f2">
-          <label>Дата<input id="sDate" type="date" required></label>
-          <label>Время<input id="sTime" type="text" placeholder="19:00"></label>
+          <label><span data-i18n="s_date">Дата</span><input id="sDate" type="date" required></label>
+          <label><span data-i18n="s_time">Время</span><input id="sTime" type="text" placeholder="19:00"></label>
         </div>
         <div class="f2">
-          <label>Город<input id="sCity" type="text" required placeholder="или «онлайн»"></label>
-          <label>Площадка и адрес<input id="sPlace" type="text"></label>
+          <label><span data-i18n="s_city">Город</span><input id="sCity" type="text" required placeholder="или «онлайн»" data-i18n-ph="s_city_ph"></label>
+          <label><span data-i18n="s_place">Площадка и адрес</span><input id="sPlace" type="text"></label>
         </div>
         <div class="f2">
-          <label>Область<select id="sField"></select></label>
-          <label>Формат<select id="sType"></select></label>
+          <label><span data-i18n="s_field">Область</span><select id="sField"></select></label>
+          <label><span data-i18n="s_type">Формат</span><select id="sType"></select></label>
         </div>
-        <label>Язык события<select id="sLang"><option value="ru">Русский</option><option value="en">Английский</option></select></label>
-        <label>Ссылка на официальный анонс или регистрацию<input id="sUrl" type="url" placeholder="https://" required></label>
-        <label>Ссылка на онлайн-трансляцию, если есть<input id="sJoin" type="url" placeholder="https://"></label>
-        <label>О чём событие<textarea id="sDesc"></textarea></label>
-        <div><button class="pill" type="submit"><span class="lbl">Отправить на проверку</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></button></div>
-        <p class="ok" id="ok" hidden>Спасибо! Анонс отправлен на проверку и появится в расписании после одобрения.</p>
+        <label><span data-i18n="s_lang">Язык события</span><select id="sLang"><option value="ru" data-i18n="s_lang_ru">Русский</option><option value="en" data-i18n="s_lang_en">Английский</option></select></label>
+        <label><span data-i18n="s_url">Ссылка на официальный анонс или регистрацию</span><input id="sUrl" type="url" placeholder="https://" required></label>
+        <label><span data-i18n="s_join">Ссылка на онлайн-трансляцию, если есть</span><input id="sJoin" type="url" placeholder="https://"></label>
+        <label><span data-i18n="s_desc">О чём событие</span><textarea id="sDesc"></textarea></label>
+        <div><button class="pill" type="submit"><span class="lbl" data-i18n="s_send">Отправить на проверку</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></button></div>
+        <p class="ok" id="ok" hidden data-i18n="s_ok">Спасибо! Анонс отправлен на проверку и появится в расписании после одобрения.</p>
         <p class="err" id="err" role="alert" hidden></p>
         <label class="hp" aria-hidden="true">Не заполняйте это поле<input id="sWebsite" type="text" tabindex="-1" autocomplete="off"></label>
       </form>
@@ -418,23 +428,32 @@ footer{padding-block:120px 0;overflow:hidden}
 
   <footer>
     <div class="foot">
-      <div class="ready"><div><span>готовы</span><span>к открытиям?</span></div><div><a class="pill ghost" href="#schedule"><span class="lbl">К расписанию</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 12V2M3 6l4-4 4 4"/></svg></span></a></div></div>
-      <div><h3>разделы</h3><ul><li><a href="#schedule">Расписание</a></li><li><a href="#faq">Вопросы</a></li><li><a href="#about">О проекте</a></li><li><a href="https://pay.cloudtips.ru/p/1a1f0305" target="_blank" rel="noopener">Поддержать проект</a></li><li><a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a></li><li><a href="#add">Добавить событие</a></li></ul></div>
-      <div><h3>источники</h3><ul><li><a href="https://elementy.ru/events" target="_blank" rel="noopener">«Элементы»</a></li><li><a href="https://polymus.ru/pages/calendar" target="_blank" rel="noopener">Политехнический музей</a></li><li><a href="https://www.skoltech.ru/lecture-hub" target="_blank" rel="noopener">Сколтех</a></li><li><a href="https://pu-ocean.ru/2027/winterschool" target="_blank" rel="noopener">Плавучий университет</a></li><li><a href="https://siriusuniversity.ru/admission/educational-modules-and-activities/" target="_blank" rel="noopener">Университет «Сириус»</a></li></ul></div>
+      <div class="ready"><div data-i18n="ready"><span>готовы</span><span>к открытиям?</span></div><div><a class="pill ghost" href="#schedule"><span class="lbl" data-i18n="to_sched">К расписанию</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 12V2M3 6l4-4 4 4"/></svg></span></a></div></div>
+      <div><h3 data-i18n="foot_sec">разделы</h3><ul><li><a href="#schedule" data-i18n="fl_sched">Расписание</a></li><li><a href="#faq" data-i18n="fl_faq">Вопросы</a></li><li><a href="#about" data-i18n="fl_about">О проекте</a></li><li><a href="https://pay.cloudtips.ru/p/1a1f0305" target="_blank" rel="noopener" data-i18n="fl_sup">Поддержать проект</a></li><li><a href="mailto:carpescience1@gmail.com">carpescience1@gmail.com</a></li><li><a href="#add" data-i18n="fl_add">Добавить событие</a></li></ul></div>
+      <div><h3 data-i18n="foot_src">источники</h3><ul><li><a href="https://elementy.ru/events" target="_blank" rel="noopener">«Элементы»</a></li><li><a href="https://polymus.ru/pages/calendar" target="_blank" rel="noopener">Политехнический музей</a></li><li><a href="https://www.skoltech.ru/lecture-hub" target="_blank" rel="noopener">Сколтех</a></li><li><a href="https://pu-ocean.ru/2027/winterschool" target="_blank" rel="noopener">Плавучий университет</a></li><li><a href="https://siriusuniversity.ru/admission/educational-modules-and-activities/" target="_blank" rel="noopener">Университет «Сириус»</a></li></ul></div>
     </div>
-    <div class="fine"><span>© 2026 carpe science · <a href="#privacy" style="color:inherit">Политика конфиденциальности</a> · <button type="button" class="linkbtn" data-cookie-settings>Настройки cookie</button></span><span>Время ловить науку и расширять горизонты</span></div>
+    <div class="fine"><span>© 2026 carpe science · <a href="#privacy" style="color:inherit" data-i18n="fine_priv">Политика конфиденциальности</a> · <button type="button" class="linkbtn" data-cookie-settings data-i18n="fine_ck">Настройки cookie</button></span><span data-i18n="fine_slogan">Время ловить науку и расширять горизонты</span></div>
     <div class="wm big" data-fit="0.995" aria-hidden="true">carpe sc<span class="ii"><svg class="iota" viewBox="0 0 46 100" aria-hidden="true"><path d="M10 8 V50 C10 80 21 92 38 92" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg><b></b></span>ence</div>
   </footer>
 </div>
 
 <div class="haze foot-h" aria-hidden="true"><i></i><i></i></div>
+<script src="i18n.js?v=20261124"></script>
 <script>
 var STATIC=false;
-const FIELDS={space:"Астрономия и космос",bio:"Биология",med:"Медицина и мозг",chem:"Химия",phys:"Физика и техника",earth:"Науки о Земле",it:"ИИ и данные",hum:"Общество и история",ocean:"Океан и климат",media:"Медиа, журналистика и кино",lit:"Литература",ling:"Лингвистика и языки",edu:"Образование и педагогика",art:"Искусство и архитектура",career:"Карьера и своё дело"};
-const TYPES={lecture:"Лекция",course:"Лекция из курса",cafe:"Научное кафе",school:"Вечерняя школа",talk:"Дискуссия",quiz:"Квиз",winter:"Зимняя школа",module:"Образовательный модуль",contest:"Соревнования",fest:"Фестиваль",tour:"Экскурсия",expo:"Выставка"};
-const MON=["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
-const MONN=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
-const WD=["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+/* язык интерфейса: ru по умолчанию; выбор хранится в браузере */
+const I=window.CS_I18N;
+let LNG=(()=>{try{const q=new URLSearchParams(location.search).get("lang");if(q&&I.codes.includes(q))return q;const v=localStorage.getItem("cs-lang");if(v&&I.codes.includes(v))return v}catch(e){}const b=(navigator.languages||[navigator.language||""]).map(x=>String(x).slice(0,2).toLowerCase())[0];return ["be","kk","uz"].includes(b)?b:"ru"})();
+let FIELDS,TYPES,MON,MONN,WD;
+const t=(k,...a)=>{const v=(k in I.L[LNG])?I.L[LNG][k]:I.L.ru[k];return typeof v==="function"?v(...a):v};
+function loadLangData(){const D=I.L[LNG];FIELDS=D.fields;TYPES=D.types;MON=D.mon;MONN=D.monN;WD=D.wd}
+loadLangData();
+/* страны: у события может быть поле country (RU/BY/KZ/UZ); иначе страна по городу, по умолчанию Россия */
+const COUNTRY_ORDER=["RU","BY","KZ","UZ"];
+const CITY_COUNTRY={"Минск":"BY","Брест":"BY","Гродно":"BY","Гомель":"BY","Витебск":"BY","Могилёв":"BY","Могилев":"BY","Алматы":"KZ","Астана":"KZ","Шымкент":"KZ","Караганда":"KZ","Усть-Каменогорск":"KZ","Павлодар":"KZ","Ташкент":"UZ","Самарканд":"UZ","Бухара":"UZ","Нукус":"UZ"};
+const countryOf=e=>e.country||CITY_COUNTRY[e.city]||(e.city==="Онлайн"?"":"RU");
+const cityName=c=>c==="Онлайн"?t("online"):c;
+const tv=v=>{const m=I.VAL[String(v??"").trim()];return LNG!=="ru"&&m&&m[LNG]?m[LNG]:v};
 const EL=id=>"https://elementy.ru/events/"+id;
 const POLY="https://polymus.ru/pages/calendar";
 const SBER="https://sberlabs.com/sberscienceaward_lectures";
@@ -484,12 +503,12 @@ let ALL=[...E,...L];
 const TODAY=(()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0")})();
 const current=e=>(e.dEnd||e.d)>=TODAY||(e.deadline&&e.deadline>=TODAY);
 const daysTo=s=>Math.round((dt(s)-dt(TODAY))/864e5);
-const leftTxt=n=>n===0?"последний день":n===1?"остался 1 день":`${plural(n,"остался","осталось","осталось")} ${n} ${plural(n,"день","дня","дней")}`;
+const leftTxt=n=>t("left",n);
 /* программа открыта для заявок: дедлайн не прошёл; без дедлайна — пока не началась */
 const openLearn=e=>e.kind==="learn"&&(e.deadline?e.deadline>=TODAY:e.d>=TODAY);
 const fieldsOf=e=>{const a=Array.isArray(e.fields)?e.fields:[];return [e.field,...a.filter(f=>f!==e.field)].filter(Boolean)};
 const GROUP_STEP=25;
-const state={coll:{},more:{},tab:"offline",lang:"",price:"",q:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
+const state={coll:{},more:{},tab:"offline",lang:"",price:"",q:"",country:"",city:"",field:"",type:"",mode:"",when:"",att:new Set(),open:null,saved:new Set()};
 try{JSON.parse(localStorage.getItem("knz-saved")||"[]").forEach(x=>state.saved.add(x))}catch(e){}
 try{JSON.parse(localStorage.getItem("cs-att")||"[]").forEach(x=>state.att.add(x))}catch(e){}
 const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state.saved]))}catch(e){}};
@@ -497,24 +516,37 @@ const persist=()=>{try{localStorage.setItem("knz-saved",JSON.stringify([...state
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const dt=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
-const fmt=s=>{const x=dt(s);return x.getDate()+" "+MON[x.getMonth()]};
+const fmt=s=>{const x=dt(s);return I.L[LNG].date(x.getDate(),x.getMonth())};
+const fmtY=s=>{const x=dt(s);return I.L[LNG].dateY(x.getDate(),x.getMonth(),x.getFullYear())};
+const until=s=>{const x=dt(s);return I.L[LNG].until(x.getDate(),x.getMonth())};
 const plural=(n,a,b,c)=>{const m=n%10,h=n%100;return m===1&&h!==11?a:(m>=2&&m<=4&&(h<10||h>=20))?b:c};
 
 function opts(sel,label,map){sel.innerHTML=`<option value="">${label}</option>`+Object.entries(map).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}
 const LANGS={ru:"на русском",en:"на английском"};
 const isFree=e=>{const p=String(e.price||"").trim();if(/^(бесплатно|вход свободный|свободный вход|0\s*₽)/i.test(p))return true;if(/\d/.test(p))return false;return /бесплат|вход свободный|свободный вход/i.test(p+" "+String(e.reg||""))};
-const langOf=e=>e.lang==="en"?"en":"ru";
+const langOf=e=>["en","be","kk","uz"].includes(e.lang)?e.lang:"ru";
 const isOnline=e=>!!e.online||e.city==="Онлайн";
 const isOffline=e=>e.city!=="Онлайн";
 function refreshCities(){
-  const cityLbl=$("#fCity").closest("label");if(cityLbl)cityLbl.hidden=state.tab==="online";
+  const online=state.tab==="online";
+  const cityLbl=$("#fCity").closest("label");if(cityLbl)cityLbl.hidden=online;
+  const coLbl=$("#fCountry").closest("label");if(coLbl)coLbl.hidden=online;
   const pool=ALL.filter(e=>state.tab==="learn"?e.kind==="learn":e.kind==="event"&&isOffline(e));
-  const cs=[...new Set(pool.map(e=>e.city))].sort((a,b)=>a.localeCompare(b,"ru"));
-  const m={};cs.forEach(c=>m[c]=c);opts($("#fCity"),"Все",m);
+  const live=pool.filter(e=>state.tab==="past"||state.tab==="saved"||current(e));
+  const cn={};live.forEach(e=>{const c=countryOf(e);if(c)cn[c]=(cn[c]||0)+1});
+  const CN=I.L[LNG].countries;
+  $("#fCountry").innerHTML=`<option value="">${t("allCountries")}</option>`+COUNTRY_ORDER.map(c=>`<option value="${c}">${CN[c]} (${cn[c]||0})</option>`).join("");
+  $("#fCountry").value=state.country;
+  const cs=[...new Set(pool.filter(e=>!state.country||countryOf(e)===state.country).map(e=>e.city))].sort((a,b)=>a.localeCompare(b,"ru"));
+  const m={};cs.forEach(c=>m[c]=cityName(c));opts($("#fCity"),t("all"),m);
   if(!cs.includes(state.city))state.city="";$("#fCity").value=state.city;
 }
-opts($("#fField"),"Все",FIELDS);opts($("#fType"),"Все",TYPES);
-opts($("#sField"),"Выберите",FIELDS);opts($("#sType"),"Выберите",TYPES);
+function refreshStaticOpts(){
+  opts($("#fField"),t("all"),FIELDS);opts($("#fType"),t("all"),TYPES);
+  opts($("#sField"),t("choose"),FIELDS);opts($("#sType"),t("choose"),TYPES);
+  $("#fField").value=state.field;$("#fType").value=state.type;
+}
+refreshStaticOpts();
 refreshCities();
 
 const iso=x=>x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
@@ -538,40 +570,41 @@ function pass(e){
   if(state.tab==="learn"&&!openLearn(e))return false;
   if(state.tab==="saved"&&!state.saved.has(e.id))return false;
   if(state.when&&!inWhen(e))return false;
+  if(state.country&&state.tab!=="online"&&countryOf(e)!==state.country)return false;
   if(state.city&&state.tab!=="online"&&e.city!==state.city)return false;
   if(state.field&&!fieldsOf(e).includes(state.field))return false;
   if(state.type&&e.type!==state.type)return false;
   if(state.lang&&langOf(e)!==state.lang)return false;
   if(state.price==="free"&&!isFree(e))return false;
-  if(state.q){const h=[e.title,e.who,e.city,e.place,e.org,e.desc,e.lang==="en"?"английский english":"",fieldsOf(e).map(f=>FIELDS[f]||"").join(" "),TYPES[e.type]||""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
+  if(state.q){const co=countryOf(e);const h=[e.title,e.who,e.city,e.place,e.org,e.desc,e.lang==="en"?"английский english "+t("english"):"",fieldsOf(e).map(f=>(FIELDS[f]||"")+" "+(I.L.ru.fields[f]||"")).join(" "),(TYPES[e.type]||"")+" "+(I.L.ru.types[e.type]||""),co?I.L.ru.countries[co]+" "+I.L[LNG].countries[co]:""].join(" ").toLowerCase();if(!h.includes(state.q))return false}
   return true;
 }
 
 function detail(e){
   const rows=[
-    ["Когда",e.kind==="learn"?`${fmt(e.d)} – ${fmt(e.dEnd)} ${dt(e.dEnd).getFullYear()}`:`${e.dEnd&&e.dEnd>e.d?`с ${fmt(e.d)} по ${fmt(e.dEnd)}`:`${fmt(e.d)}, ${WD[dt(e.d).getDay()]}`}, ${esc(e.time)}${/\d:\d\d/.test(e.time||"")?(isOffline(e)?" (местное время)":" (по Москве)"):""}`],
-    e.deadline&&["Заявки до",`${fmt(e.deadline)} ${dt(e.deadline).getFullYear()}`],
-    e.who&&["Лектор",esc(e.who)+(e.whoAbout?`, ${esc(e.whoAbout)}`:"")],
-    ["Площадка",esc(e.place)+(e.online?" · есть онлайн-трансляция":"")],
-    e.addr&&["Адрес",esc(e.addr)],
-    ["Организатор",esc(e.org)],
-    e.series&&["Цикл",esc(e.series)],
-    ["Для кого",esc(e.aud)],
-    e.lang==="en"&&["Язык","английский"+(e.langNote?`, ${esc(e.langNote)}`:"")],
-    ["Стоимость",esc(e.price)],
-    isOnline(e)&&["Онлайн",e.joinUrl?`<a href="${esc(e.joinUrl)}" target="_blank" rel="noopener">${esc(e.joinNote||"Ссылка на трансляцию")}</a>`:esc(e.joinNote||"Ссылку на трансляцию организатор даёт на странице события или после регистрации")],
-    e.reg&&["Как попасть",esc(e.reg)]
+    [t("r_when"),e.kind==="learn"?`${fmt(e.d)} – ${fmtY(e.dEnd)}`:`${e.dEnd&&e.dEnd>e.d?t("range",fmt(e.d),fmt(e.dEnd)):`${fmt(e.d)}, ${WD[dt(e.d).getDay()]}`}, ${esc(e.time)}${/\d:\d\d/.test(e.time||"")?(isOffline(e)?t("localTime"):t("mskTime")):""}`],
+    e.deadline&&[t("r_dl"),fmtY(e.deadline)],
+    e.who&&[t("r_who"),esc(e.who)+(e.whoAbout?`, ${esc(e.whoAbout)}`:"")],
+    [t("r_place"),esc(e.place)+(e.online?t("hasStream"):"")],
+    e.addr&&[t("r_addr"),esc(e.addr)],
+    [t("r_org"),esc(e.org)],
+    e.series&&[t("r_series"),esc(e.series)],
+    [t("r_aud"),esc(tv(e.aud))],
+    langOf(e)!=="ru"&&[t("r_lang"),t("langName")[langOf(e)]+(e.langNote?`, ${esc(e.langNote)}`:"")],
+    [t("r_price"),esc(tv(e.price))],
+    isOnline(e)&&[t("r_online"),e.joinUrl?`<a href="${esc(e.joinUrl)}" target="_blank" rel="noopener">${esc(LNG==="ru"&&e.joinNote?e.joinNote:t("streamLink"))}</a>`:esc(LNG==="ru"&&e.joinNote?e.joinNote:(e.joinNote&&LNG!=="ru"?e.joinNote:t("streamLater")))],
+    e.reg&&[t("r_reg"),esc(tv(e.reg))]
   ].filter(Boolean);
   return `<div class="detail" id="d-${e.id}"><div>
     <p>${esc(e.desc)}</p>
     <dl class="facts">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
     ${attendBlock(e)}
-    <div class="acts">${isOnline(e)&&e.joinUrl?`<a class="pill" data-src="${e.id}" href="${esc(e.joinUrl)}" target="_blank" rel="noopener"><span class="lbl">Подключиться</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}${e.src?`<a class="pill${isOnline(e)&&e.joinUrl?" ghost":""}" data-src="${e.id}" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="lbl">${esc(e.srcName||"Страница события")}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}
-      <button class="link" data-save="${e.id}">${state.saved.has(e.id)?"Убрать из сохранённого":"Сохранить"}</button>
-      <button class="link" data-cal="${e.id}">${e.kind==="learn"&&e.deadline?"Напомнить о дедлайне":"Напомнить"}</button>
-      <button class="link" data-share="${e.id}">Поделиться</button></div>
-    <div class="cal-box" id="cb-${e.id}" hidden><span>${e.kind==="learn"&&e.deadline?`Добавьте дедлайн ${fmt(e.deadline)} в календарь — напоминание придёт за 3 дня и утром в последний день.`:"Добавьте событие в календарь — напоминание придёт за день и за 2 часа до начала."}</span><button class="link" data-ics="${e.id}">Скачать для iPhone, Android, Outlook, Яндекс</button><a class="link" data-gcal="${e.id}" href="#" target="_blank" rel="noopener">Google Календарь</a></div>
-    <div class="share-box" id="sb-${e.id}" hidden><input type="text" readonly aria-label="Ссылка на событие"><span>Ссылка выделена, скопируйте её</span></div>
+    <div class="acts">${isOnline(e)&&e.joinUrl?`<a class="pill" data-src="${e.id}" href="${esc(e.joinUrl)}" target="_blank" rel="noopener"><span class="lbl">${t("join")}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}${e.src?`<a class="pill${isOnline(e)&&e.joinUrl?" ghost":""}" data-src="${e.id}" href="${esc(e.src)}" target="_blank" rel="noopener"><span class="lbl">${esc(LNG==="ru"?(e.srcName||t("srcPage")):t("srcPage"))}</span><span class="arr" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>`:""}
+      <button class="link" data-save="${e.id}">${state.saved.has(e.id)?t("unsave"):t("save")}</button>
+      <button class="link" data-cal="${e.id}">${e.kind==="learn"&&e.deadline?t("remindDl"):t("remind")}</button>
+      <button class="link" data-share="${e.id}">${t("share")}</button></div>
+    <div class="cal-box" id="cb-${e.id}" hidden><span>${e.kind==="learn"&&e.deadline?t("calDl",fmt(e.deadline)):t("calEv")}</span><button class="link" data-ics="${e.id}">${t("icsBtn")}</button><a class="link" data-gcal="${e.id}" href="#" target="_blank" rel="noopener">${t("gcal")}</a></div>
+    <div class="share-box" id="sb-${e.id}" hidden><input type="text" readonly aria-label="${t("shareAria")}"><span>${t("shareSel")}</span></div>
   </div></div>`;
 }
 
@@ -579,20 +612,21 @@ function attendBlock(e){
   if(STATIC)return "";
   if(e.kind!=="event"||e.d>TODAY)return "";
   const mine=state.att.has(e.id),n=e.attended||0;
-  return `<div class="attend"><button class="att${mine?" on":""}" data-attend="${e.id}" ${mine?"disabled":""}><span class="att-dot" aria-hidden="true"></span>${mine?"Вы отметили, что были здесь":"Я был(а) здесь благодаря carpe science"}</button><span class="att-n">${n?`${n} ${plural(n,"человек отметил","человека отметили","человек отметили")}`:"Будьте первым, кто отметит"}</span></div>`;
+  return `<div class="attend"><button class="att${mine?" on":""}" data-attend="${e.id}" ${mine?"disabled":""}><span class="att-dot" aria-hidden="true"></span>${mine?t("attMine"):t("attBtn")}</button><span class="att-n">${n?t("attN",n):t("attFirst")}</span></div>`;
 }
+const cityWithCountry=e=>{const c=countryOf(e);return c&&c!=="RU"?`${e.city}, ${I.L[LNG].countries[c]}`:e.city};
 function item(e){
   const open=state.open===e.id;
   const right=e.kind==="learn"
-    ?(e.deadline?`<span class="left${daysTo(e.deadline)<=7?" urgent":""}">${leftTxt(daysTo(e.deadline))}</span><span>заявки до ${fmt(e.deadline)}</span>`:`<span>приём открыт, срок не указан</span>`)+`<span>начало ${fmt(e.d)}</span>`
-    :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">${e.d<TODAY&&state.tab!=="past"?"идёт до":`${fmt(e.d)} –`} ${fmt(e.dEnd)}</span>`:""}<span>${e.city==="Онлайн"?"только онлайн":e.online?"очно и онлайн":"очно"}</span>`;
+    ?(e.deadline?`<span class="left${daysTo(e.deadline)<=7?" urgent":""}">${leftTxt(daysTo(e.deadline))}</span><span>${t("dlUntil",until(e.deadline))}</span>`:`<span>${t("openNoDl")}</span>`)+`<span>${t("startAt",fmt(e.d))}</span>`
+    :`${e.dEnd&&e.dEnd>e.d?`<span class="dl">${e.d<TODAY&&state.tab!=="past"?t("goesUntil",until(e.dEnd)):`${fmt(e.d)} – ${fmt(e.dEnd)}`}</span>`:""}<span>${e.city==="Онлайн"?t("onlyOnline"):e.online?t("bothModes"):t("inPerson")}</span>`;
   return `<div class="ev"><button class="row" data-id="${e.id}" aria-expanded="${open}" aria-controls="d-${e.id}">
     <span class="time">${e.kind==="learn"?"":esc((e.time||"—").replace("время уточняется","—"))}</span>
-    <span class="main"><span class="kind">${e.kind==="learn"&&e.type==="school"?"Образовательная программа":TYPES[e.type]||"Событие"} · ${fieldsOf(e).map(f=>FIELDS[f]).filter(Boolean).join(", ")||"Наука"}${e.lang==="en"?' · <span class="new">на английском</span>':""}${e.verified===false?' · <span class="new">новое, не проверено</span>':""}</span>
+    <span class="main"><span class="kind">${e.kind==="learn"&&e.type==="school"?t("eduProgram"):TYPES[e.type]||t("eventWord")} · ${fieldsOf(e).map(f=>FIELDS[f]).filter(Boolean).join(", ")||t("science")}${langOf(e)!=="ru"?` · <span class="new">${t("langBadge")[langOf(e)]}</span>`:""}${e.verified===false?` · <span class="new">${t("unverified")}</span>`:""}</span>
       <span class="ttl">${esc(e.title)}</span>
       ${e.who?`<span class="who">${esc(e.who)}</span>`:""}
-      <span class="where">${e.city==="Онлайн"?`Онлайн · ${esc(e.org||e.place)}`:state.tab==="online"?`Трансляция · очно: ${esc(e.city)}, ${esc(e.place)}`:`${esc(e.city)} · ${esc(e.place)}`}</span></span>
-    <span class="right"><span class="plus" aria-hidden="true">+</span>${right}${state.saved.has(e.id)?'<span class="mark">сохранено</span>':""}</span>
+      <span class="where">${e.city==="Онлайн"?`${t("online")} · ${esc(e.org||e.place)}`:state.tab==="online"?`${t("streamFrom")}${esc(cityWithCountry(e))}, ${esc(e.place)}`:`${esc(cityWithCountry(e))} · ${esc(e.place)}`}</span></span>
+    <span class="right"><span class="plus" aria-hidden="true">+</span>${right}${state.saved.has(e.id)?`<span class="mark">${t("saved")}</span>`:""}</span>
   </button>${open?detail(e):""}</div>`;
 }
 
@@ -601,33 +635,33 @@ function render(){
   $("#n-offline").textContent=ALL.filter(e=>e.kind==="event"&&isOffline(e)&&current(e)).length;$("#n-online").textContent=ALL.filter(e=>e.kind==="event"&&isOnline(e)&&current(e)).length;$("#n-learn").textContent=ALL.filter(openLearn).length;$("#n-saved").textContent=state.saved.size||"";
   const cur=ALL.filter(current),ev=cur.filter(e=>e.kind==="event"),nOnline=ev.filter(isOnline).length;
   const nc=new Set(ev.filter(isOffline).map(e=>e.city)).size,np=ALL.filter(openLearn).length,ns=new Set(cur.map(e=>{try{return new URL(e.src).hostname}catch(x){return e.src}})).size;
-  $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${plural(ev.length,"событие","события","событий")} в расписании</span></div><div class="stat"><b>${nc}</b><span>${plural(nc,"город","города","городов")} в афише</span></div><div class="stat"><b>${nOnline}</b><span>${plural(nOnline,"событие","события","событий")} онлайн — из любого города</span></div><div class="stat"><b>${np}</b><span>${plural(np,"программа","программы","программ")} с открытым набором</span></div>`;
+  $("#factsLine").innerHTML=`<div class="stat"><b>${ev.length}</b><span>${t("statEv",ev.length)}</span></div><div class="stat"><b>${nc}</b><span>${t("statCity",nc)}</span></div><div class="stat"><b>${nOnline}</b><span>${t("statOnline",nOnline)}</span></div><div class="stat"><b>${np}</b><span>${t("statProg",np)}</span></div>`;
   const soon=ALL.filter(e=>openLearn(e)&&e.deadline&&daysTo(e.deadline)<=30).sort((a,b)=>a.deadline.localeCompare(b.deadline)).slice(0,matchMedia("(max-width:560px)").matches?3:5);
   const sb=$("#soon");
   if(soon.length){
     sb.hidden=false;
-    sb.innerHTML=`<div class="soon-head"><h2>Успейте подать заявку</h2><button data-go-learn>Все школы и программы</button></div><ul class="soon-list">${soon.map(e=>{const n=daysTo(e.deadline);return `<li><button data-open-learn="${e.id}"><span class="s-dl">до ${fmt(e.deadline)}</span><span class="s-ttl">${esc(e.title)}<small>${esc(e.city)} · начало ${fmt(e.d)}</small></span><span class="left${n<=7?" urgent":""}">${leftTxt(n)}</span></button></li>`}).join("")}</ul>`;
+    sb.innerHTML=`<div class="soon-head"><h2>${t("soonHead")}</h2><button data-go-learn>${t("soonAll")}</button></div><ul class="soon-list">${soon.map(e=>{const n=daysTo(e.deadline);return `<li><button data-open-learn="${e.id}"><span class="s-dl">${until(e.deadline)}</span><span class="s-ttl">${esc(e.title)}<small>${esc(cityName(e.city))} · ${t("startAt",fmt(e.d))}</small></span><span class="left${n<=7?" urgent":""}">${leftTxt(n)}</span></button></li>`}).join("")}</ul>`;
   }else sb.hidden=true;
-  const active=state.q||state.city||state.field||state.type||state.lang||state.price||state.when;
-  $("#count").innerHTML=`${list.length} ${plural(list.length,"событие","события","событий")}${state.tab==="online"?" · время московское":""}${active?'<button id="reset">Сбросить фильтры</button>':""}`;
+  const active=state.q||state.country||state.city||state.field||state.type||state.lang||state.price||state.when;
+  $("#count").innerHTML=`${t("nEvents",list.length)}${state.tab==="online"?t("mskNote"):""}${active?`<button id="reset">${t("reset")}</button>`:""}`;
   if(active)$("#reset").onclick=reset;
-  if(!list.length){$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?"Здесь появятся события, которые вы сохраните.":state.tab==="past"?"Здесь появятся события последних 30 дней. На них можно отметить, что вы сходили.":"По этим условиям ничего нет. Попробуйте убрать часть фильтров."}</div>`;return}
+  if(!list.length){const cEmpty=state.country&&state.country!=="RU"&&state.tab!=="online"&&!ALL.some(e=>countryOf(e)===state.country&&current(e));$("#list").innerHTML=`<div class="empty">${state.tab==="saved"&&!state.saved.size?t("emptySaved"):state.tab==="past"?t("emptyPast"):cEmpty?t("emptyCountry"):t("empty")}</div>`;return}
   let html="",lastM="";
   if(state.tab==="learn"){
     const withDl=list.filter(e=>e.deadline).sort((a,b)=>a.deadline.localeCompare(b.deadline)),noDl=list.filter(e=>!e.deadline);
     const byDl={};withDl.forEach(e=>{(byDl[e.deadline]=byDl[e.deadline]||[]).push(e)});
-    html+=months(byDl,"заявки до",active);
-    if(noDl.length){const k="learn-nodl",op=isOpen(k,!!active);html+=ghead(k,op,"Срок подачи не указан","уточняйте у организатора",noDl.length);if(op)html+=`<section class="day"><div class="dlabel"><span>приём открыт</span></div><div class="items">${noDl.map(item).join("")}</div></section>`}
+    html+=months(byDl,t("byDeadline"),active);
+    if(noDl.length){const k="learn-nodl",op=isOpen(k,!!active);html+=ghead(k,op,t("noDlHead"),t("noDlSmall"),noDl.length);if(op)html+=`<section class="day"><div class="dlabel"><span>${t("openNow")}</span></div><div class="items">${noDl.map(item).join("")}</div></section>`}
     $("#list").innerHTML=html;return;
   }
   const ongoing=state.tab==="past"?[]:list.filter(e=>e.d<TODAY).sort((a,b)=>(a.dEnd||a.d).localeCompare(b.dEnd||b.d));
-  if(ongoing.length){const k=state.tab+"-ongoing",op=isOpen(k,!!active);html+=ghead(k,op,"Идут сейчас","выставки, фестивали и циклы, начавшиеся раньше",ongoing.length);if(op)html+=`<section class="day"><div class="dlabel"><span>до даты в карточке</span></div><div class="items">${ongoing.map(item).join("")}</div></section>`}
+  if(ongoing.length){const k=state.tab+"-ongoing",op=isOpen(k,!!active);html+=ghead(k,op,t("ongoing"),t("ongoingSmall"),ongoing.length);if(op)html+=`<section class="day"><div class="dlabel"><span>${t("ongoingLbl")}</span></div><div class="items">${ongoing.map(item).join("")}</div></section>`}
   const byDay={};list.filter(e=>!ongoing.includes(e)).forEach(e=>{(byDay[e.d]=byDay[e.d]||[]).push(e)});
   html+=months(byDay,"",active,state.tab==="past");
   $("#list").innerHTML=html;
 }
 function isOpen(k,def){return k in state.coll?state.coll[k]:def}
-function ghead(k,open,t,sm,n,lbl){return `<button class="month mhead" data-group="${k}" aria-expanded="${open}"><span>${t}</span><small>${sm}</small><span class="mcount">${n} ${state.tab==="learn"?plural(n,"программа","программы","программ"):plural(n,"событие","события","событий")}<i aria-hidden="true">${open?"−":"+"}</i></span></button>`}
+function ghead(k,open,ttl,sm,n,lbl){return `<button class="month mhead" data-group="${k}" aria-expanded="${open}"><span>${ttl}</span><small>${sm}</small><span class="mcount">${state.tab==="learn"?t("nProgs",n):t("nEvents",n)}<i aria-hidden="true">${open?"−":"+"}</i></span></button>`}
 function months(byDay,note,active,rev){
   const days=Object.keys(byDay).sort();if(rev)days.reverse();
   const byM={};days.forEach(d=>{(byM[d.slice(0,7)]=byM[d.slice(0,7)]||[]).push(d)});
@@ -637,12 +671,12 @@ function months(byDay,note,active,rev){
     html+=ghead(k,op,MONN[x.getMonth()],x.getFullYear()+(note?" · "+note:""),n);
     if(!op)return;
     const lim=state.more[k]||GROUP_STEP;let shown=0;
-    for(const d of ds){if(shown>=lim)break;const y=dt(d);html+=`<section class="day"><div class="dlabel"><b>${y.getDate()}</b><span>${MON[y.getMonth()]}<em>${WD[y.getDay()]}</em></span></div><div class="items">${byDay[d].map(item).join("")}</div></section>`;shown+=byDay[d].length}
-    const rest=n-shown;if(rest>0)html+=`<button class="more" data-more="${k}">Показать ещё ${Math.min(GROUP_STEP,rest)} из ${rest}</button>`;
+    for(const d of ds){if(shown>=lim)break;const y=dt(d);html+=`<section class="day"><div class="dlabel"><b>${y.getDate()}</b><span>${I.L[LNG].dlabelMon(y.getMonth())}<em>${WD[y.getDay()]}</em></span></div><div class="items">${byDay[d].map(item).join("")}</div></section>`;shown+=byDay[d].length}
+    const rest=n-shown;if(rest>0)html+=`<button class="more" data-more="${k}">${t("more",Math.min(GROUP_STEP,rest),rest)}</button>`;
   });
   return html;
 }
-function reset(){Object.assign(state,{q:"",city:"",field:"",type:"",lang:"",price:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>$(s).value="");render()}
+function reset(){Object.assign(state,{q:"",country:"",city:"",field:"",type:"",lang:"",price:"",mode:"",when:""});document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));["#q","#fCountry","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>$(s).value="");refreshCities();render()}
 
 $("#list").addEventListener("click",ev=>{
   const g=ev.target.closest("[data-group]");if(g){const k=g.dataset.group;state.coll[k]=g.getAttribute("aria-expanded")!=="true";render();const h=document.querySelector(`[data-group="${k}"]`);h&&h.focus({preventScroll:true});return}
@@ -650,10 +684,10 @@ $("#list").addEventListener("click",ev=>{
   const a=ev.target.closest("[data-attend]");
   if(a){const id=a.dataset.attend;a.disabled=true;
     post("/api/attend",{id}).then(r=>r.json().then(j=>({ok:r.ok,j}))).then(({ok,j})=>{
-      if(!ok)throw new Error(j.error||"Не получилось");
+      if(!ok)throw new Error(j.error||t("failed"));
       state.att.add(id);try{localStorage.setItem("cs-att",JSON.stringify([...state.att]))}catch(x){}
       const e=ALL.find(x=>x.id===id);if(e)e.attended=j.attended;render();
-    }).catch(err=>{a.disabled=false;const n=a.parentElement.querySelector(".att-n");if(n)n.textContent=err.message==="Failed to fetch"?"Нет связи с сервером, попробуйте позже":err.message});
+    }).catch(err=>{a.disabled=false;const n=a.parentElement.querySelector(".att-n");if(n)n.textContent=err.message==="Failed to fetch"?t("noServer"):err.message});
     return}
   const src=ev.target.closest("[data-src]");if(src){post("/api/click",{id:src.dataset.src}).catch(()=>{});return}
   const cb=ev.target.closest("[data-cal]");
@@ -670,6 +704,7 @@ $("#list").addEventListener("click",ev=>{
   const again=document.querySelector(`.row[data-id="${r.dataset.id}"]`);again&&again.focus({preventScroll:true});
 });
 $("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();render()});
+$("#fCountry").onchange=e=>{state.country=e.target.value;state.city="";refreshCities();render()};
 $("#fCity").onchange=e=>{state.city=e.target.value;render()};
 $("#fField").onchange=e=>{state.field=e.target.value;render()};
 $("#fType").onchange=e=>{state.type=e.target.value;render()};
@@ -698,12 +733,40 @@ $("#addForm").onsubmit=async e=>{
   $("#ok").hidden=true;$("#err").hidden=true;btn.disabled=true;
   try{
     const r=await post("/api/submit",body);const j=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(j.error||"Не получилось отправить. Попробуйте ещё раз.");
+    if(!r.ok)throw new Error(j.error||t("sendFail"));
     $("#ok").hidden=false;f.querySelectorAll("input,textarea").forEach(i=>i.value="");f.querySelectorAll("select").forEach(i=>i.selectedIndex=0);
-  }catch(err){$("#err").textContent=err.message==="Failed to fetch"?"Нет связи с сервером. Попробуйте позже.":err.message;$("#err").hidden=false}
+  }catch(err){$("#err").textContent=err.message==="Failed to fetch"?t("noServer2"):err.message;$("#err").hidden=false}
   btn.disabled=false;
 };
 
+/* перевод статичных блоков страницы */
+const ORIG={};let i18nReady=false;
+function applyStatic(){
+  if(!i18nReady){
+    document.querySelectorAll("[data-i18n]").forEach(el=>ORIG[el.dataset.i18n]=el.innerHTML);
+    document.querySelectorAll("[data-i18n-aria]").forEach(el=>ORIG["aria:"+el.dataset.i18nAria]=el.getAttribute("aria-label"));
+    document.querySelectorAll("[data-i18n-ph]").forEach(el=>ORIG["ph:"+el.dataset.i18nPh]=el.getAttribute("placeholder"));
+    const sel=$("#uiLang");sel.innerHTML=I.codes.map(c=>`<option value="${c}" lang="${c}">${I.L[c].name}</option>`).join("");
+    sel.onchange=e=>setLang(e.target.value);
+    i18nReady=true;
+  }
+  const S=LNG==="ru"?{}:I.ST[LNG];
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n,v=k in S?S[k]:ORIG[k];if(v!=null&&el.innerHTML!==v)el.innerHTML=v});
+  document.querySelectorAll("[data-i18n-aria]").forEach(el=>{const k=el.dataset.i18nAria;el.setAttribute("aria-label",k in S?S[k]:ORIG["aria:"+k])});
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{const k=el.dataset.i18nPh;el.setAttribute("placeholder",k in S?S[k]:ORIG["ph:"+k])});
+  document.querySelectorAll("[data-i18n-dyn]").forEach(el=>el.textContent=t(el.dataset.i18nDyn));
+  document.querySelectorAll("[data-i18n-dyn-aria]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.i18nDynAria)));
+  document.documentElement.lang=LNG;
+  $("#uiLang").value=LNG;
+  const cn=$("#contentNote");cn.textContent=t("contentNote");cn.hidden=!t("contentNote");
+  const sn=$("#staticNote");if(sn)sn.innerHTML=t("staticNote");
+  if(state.updated)$("#updated").textContent=t("updated",fmt(state.updated.slice(0,10)));
+}
+function setLang(c){
+  if(!I.codes.includes(c))return;LNG=c;try{localStorage.setItem("cs-lang",c)}catch(e){}
+  loadLangData();applyStatic();refreshStaticOpts();refreshCities();render();
+}
+window.csInitI18n=()=>{applyStatic()};
 state.open=E[0].id;render();
 
 /* напоминания через календарь: без регистрации и без сбора данных */
@@ -717,9 +780,9 @@ function calInfo(e){
     const sh=+m[1],sm=+m[2];let eh=m[3]?+m[3]:sh+2,em=m[3]?+m[4]:sm;if(eh>23){eh=23;em=59}
     start=day+"T"+pad(sh)+pad(sm)+"00";end=day+"T"+pad(eh)+pad(em)+"00";
   }else{const x=dt(dl?e.deadline:(e.dEnd||e.d));x.setDate(x.getDate()+1);start=day;end=x.getFullYear()+String(x.getMonth()+1).padStart(2,"0")+String(x.getDate()).padStart(2,"0")}
-  const title=dl?"Последний день подачи заявки: "+e.title:e.title;
-  const where=isOffline(e)?[e.city,e.place,e.addr].filter(Boolean).join(", "):"Онлайн";
-  const desc=[e.desc,(isOnline(e)&&!isOffline(e)&&m)?"Время московское.":"",e.joinUrl?"Трансляция: "+e.joinUrl:"",e.src?"Анонс: "+e.src:"","Событие на carpe science: "+linkFor(e.id)].filter(Boolean).join("\n");
+  const title=dl?t("calLastDay")+e.title:e.title;
+  const where=isOffline(e)?[cityWithCountry(e),e.place,e.addr].filter(Boolean).join(", "):t("online");
+  const desc=[e.desc,(isOnline(e)&&!isOffline(e)&&m)?t("calMsk"):"",e.joinUrl?t("calStream")+e.joinUrl:"",e.src?t("calAnn")+e.src:"",t("calOn")+linkFor(e.id)].filter(Boolean).join("\n");
   return {start,end,allDay,title,where,desc,dl};
 }
 function gcalUrl(e){
@@ -744,9 +807,9 @@ function downloadIcs(e){
 const linkFor=id=>location.origin+location.pathname+"#event-"+id;
 async function shareEvent(id,btn){
   const e=ALL.find(x=>x.id===id);if(!e)return;
-  const url=linkFor(id),text=`${e.title} — ${fmt(e.d)}${e.city?", "+e.city:""}`;
+  const url=linkFor(id),text=`${e.title} — ${fmt(e.d)}${e.city?", "+cityName(e.city):""}`;
   if(navigator.share&&matchMedia("(pointer:coarse)").matches){try{await navigator.share({title:e.title,text,url});return}catch(x){if(x&&x.name==="AbortError")return}}
-  try{await navigator.clipboard.writeText(url);const old=btn.textContent;btn.textContent="Ссылка скопирована";setTimeout(()=>{btn.textContent=old},2000);return}catch(x){}
+  try{await navigator.clipboard.writeText(url);const old=btn.textContent;btn.textContent=t("copied");setTimeout(()=>{btn.textContent=old},2000);return}catch(x){}
   const box=document.getElementById("sb-"+id);if(box){box.hidden=false;const i=box.querySelector("input");i.value=url;i.focus();i.select()}
 }
 function tabFor(e){
@@ -758,8 +821,8 @@ function openFromHash(){
   const m=location.hash.match(/^#event-([A-Za-z0-9_\-.~:@+]+)$/);if(!m)return false;
   const e=ALL.find(x=>x.id===m[1]);if(!e)return false;
   const tab=tabFor(e);if(!tab)return false;
-  Object.assign(state,{tab,open:e.id,q:"",city:"",field:"",type:"",lang:"",price:"",when:""});
-  ["#q","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>{const el=$(s);if(el)el.value=""});
+  Object.assign(state,{tab,open:e.id,q:"",country:"",city:"",field:"",type:"",lang:"",price:"",when:""});
+  ["#q","#fCountry","#fCity","#fField","#fType","#fLang","#fPrice"].forEach(s=>{const el=$(s);if(el)el.value=""});
   document.querySelectorAll(".when button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.when===""));
   document.querySelectorAll(".nav button").forEach(x=>x.setAttribute("aria-current",x.dataset.tab===tab));
   refreshCities();render();
@@ -777,13 +840,13 @@ function useEvents(list,updated){
   if(!list.length)return;
   ALL=list;
   if(state.open&&!ALL.some(e=>e.id===state.open))state.open=null;
-  if(updated){const x=dt(updated.slice(0,10));$("#updated").textContent="Обновлено "+x.getDate()+" "+MON[x.getMonth()]}
+  if(updated){state.updated=updated;$("#updated").textContent=t("updated",fmt(updated.slice(0,10)))}
   refreshCities();render();
   openFromHash();
 }
 function staticMode(){
   STATIC=true;
-  const f=$("#addForm");if(f){f.hidden=true;const n=document.createElement("p");n.className="ok";n.innerHTML="Пока форма в разработке, присылайте анонсы на почту <a href=\"mailto:carpescience1@gmail.com?subject=%D0%90%D0%BD%D0%BE%D0%BD%D1%81%20%D0%B4%D0%BB%D1%8F%20carpe%20science\" style=\"color:var(--ink)\">carpescience1@gmail.com</a> — достаточно ссылки на официальный анонс. Особенно ждём события из небольших городов: проверим и добавим.";f.after(n)}
+  const f=$("#addForm");if(f){f.hidden=true;const n=document.createElement("p");n.className="ok";n.id="staticNote";n.innerHTML=t("staticNote");f.after(n)}
   render();
   fetch("data/events.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(list=>{
     if(!Array.isArray(list))return;
@@ -813,8 +876,8 @@ let fitT;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fitMa
 </script>
 
 <div class="cookie" id="cookie" role="dialog" aria-live="polite" aria-label="Cookie" hidden>
-  <p>Мы хотим считать посещения через Яндекс Метрику, чтобы понимать, сколько людей пользуется афишей. Для этого нужны cookie. Подробнее — в <a href="#privacy">политике конфиденциальности</a>.</p>
-  <div class="row-b"><button type="button" class="yes" data-consent="yes">Принять</button><button type="button" data-consent="no">Отказаться</button></div>
+  <p data-i18n="ck_text">Мы хотим считать посещения через Яндекс Метрику, чтобы понимать, сколько людей пользуется афишей. Для этого нужны cookie. Подробнее — в <a href="#privacy">политике конфиденциальности</a>.</p>
+  <div class="row-b"><button type="button" class="yes" data-consent="yes" data-i18n="ck_yes">Принять</button><button type="button" data-consent="no" data-i18n="ck_no">Отказаться</button></div>
 </div>
 <script>
 /* Яндекс Метрика: загружается только после согласия посетителя */
@@ -839,7 +902,8 @@ let fitT;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fitMa
   document.addEventListener("click",function(e){if(e.target.closest("[data-cookie-settings]"))box.hidden=false});
 })();
 </script>
-<button id="toTop" hidden aria-label="Наверх, к фильтрам">↑</button>
+<button id="toTop" hidden aria-label="Наверх, к фильтрам" data-i18n-dyn-aria="toTop">↑</button>
+<script>window.csInitI18n&&window.csInitI18n();</script>
 <script>(function(){var b=document.getElementById("toTop");var t=document.getElementById("list");addEventListener("scroll",function(){b.hidden=scrollY<900},{passive:true});b.onclick=function(){var f=document.querySelector(".nav")||t;f.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})}})();</script>
 </body>
 </html>
